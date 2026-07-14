@@ -8,12 +8,12 @@
     <h1>My Page</h1>
     <div>
         <div>
-            <h2>マイページ</h2>
-            <h2>マイスコア</h2>
+            <button>マイページ</button>
+            <button>マイスコア</button>
         </div>
-        <div>
+        <div id="tab1">
             <h3>ユーザー名</h3>
-            <form>これはフォームタグです</form>
+            <input type="text">
             <button>変更</button>
         </div>
         <div>
@@ -24,6 +24,44 @@
         <a href="">お問い合わせ</a>
         <a href="">ログアウト</a>
         <a href="">退会</a>
+        <div id="tab2">
+            <select name="subject" id="subject">
+                <option value="1">基本情報技術者試験</option>
+                <option value="2">ITパスポート</option>
+                <option value="3">英語</option>
+            </select>
+            <select name="level" id="level">
+                <option value="1">ノーマル</option>
+                <option value="2">ハード</option>
+            </select>
+            <div class="score-card">
+                <button class="carousel-arrow left">◀</button>
+                <button class="carousel-arrow right">▶</button>
+                <div class="score-title">マネジメント</div>
+        
+                    <div class="score-row rank-1">
+                        <div class="rank">1</div>
+                        <div class="pt">12800<small>pt</small></div>
+                    </div>
+                    <div class="score-row rank-2">
+                        <div class="rank">2</div>
+                        <div class="pt">10300<small>pt</small></div>
+                    </div>
+                    <div class="score-row rank-3">
+                        <div class="rank">3</div>
+                        <div class="pt">9300<small>pt</small></div>
+                    </div>
+                    <div class="score-row rank-4">
+                        <div class="rank">4</div>
+                        <div class="pt">7400<small>pt</small></div>
+                    </div>
+                    <div class="score-row rank-5">
+                        <div class="rank">5</div>
+                        <div class="pt">5400<small>pt</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
