@@ -1,24 +1,33 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>ログイン</title>
+  <meta charset="UTF-8">
+  <title>ログイン</title>
 </head>
 <body>
-    <div>
-        <form>
-            <h1>ログイン</h1>
-            <label>メールアドレス</label>
-            <input type="email">
-            <label>パスワード</label>
-            <input type="password">
-            <p>テキストを忘れた方はこちら ▶</p>
-            <p>メールアドレスが違った場合ここに入る（本番はテキストなしスタート）</p>
-            <button>ログイン</button>
-            <p>新規登録はこちら ▶</p>
-        </form>
-    </div>
-    
+<div>
+  <!-- ✅ fetchからThymeleafの通常フォームに変更 -->
+  <form th:action="@{/user/login}" method="post">
+
+    <h1>ログイン</h1>
+
+    <!-- ✅ サーバーから渡されたエラーメッセージを表示 -->
+    <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+    <label>メールアドレス</label>
+    <input name="email" type="email" required>
+
+    <label>パスワード</label>
+    <input name="password" type="password" required>
+
+    <a href="/user/password-reset-email">パスワードを忘れた方はこちら ▶</a>
+    <button type="submit">ログイン</button>
+    <a href="/user/registered-email">新規登録はこちら ▶</a>
+
+  </form>
+</div>
+
+<!-- ✅ JavaScriptのfetch処理は不要になるので全削除 -->
 
 </body>
 </html>

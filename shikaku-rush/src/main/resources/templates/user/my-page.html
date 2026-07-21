@@ -1,67 +1,240 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>マイページ</title>
+  <meta charset="UTF-8">
+  <title>マイページ</title>
 </head>
 <body>
-    <h1>My Page</h1>
+  <h1>My Page</h1>
+  <div>
     <div>
-        <div>
-            <button>マイページ</button>
-            <button>マイスコア</button>
-        </div>
-        <div id="tab1">
-            <h3>ユーザー名</h3>
-            <input type="text">
-            <button>変更</button>
-        </div>
-        <div>
-            <h3>称号</h3>
-            <h3>称号が入るよ!!!!</h3>
-            <button>変更</button>
-        </div>
-        <a href="">お問い合わせ</a>
-        <a href="">ログアウト</a>
-        <a href="">退会</a>
-        <div id="tab2">
-            <select name="subject" id="subject">
-                <option value="1">基本情報技術者試験</option>
-                <option value="2">ITパスポート</option>
-                <option value="3">英語</option>
-            </select>
-            <select name="level" id="level">
-                <option value="1">ノーマル</option>
-                <option value="2">ハード</option>
-            </select>
-            <div class="score-card">
-                <button class="carousel-arrow left">◀</button>
-                <button class="carousel-arrow right">▶</button>
-                <div class="score-title">マネジメント</div>
-        
-                    <div class="score-row rank-1">
-                        <div class="rank">1</div>
-                        <div class="pt">12800<small>pt</small></div>
-                    </div>
-                    <div class="score-row rank-2">
-                        <div class="rank">2</div>
-                        <div class="pt">10300<small>pt</small></div>
-                    </div>
-                    <div class="score-row rank-3">
-                        <div class="rank">3</div>
-                        <div class="pt">9300<small>pt</small></div>
-                    </div>
-                    <div class="score-row rank-4">
-                        <div class="rank">4</div>
-                        <div class="pt">7400<small>pt</small></div>
-                    </div>
-                    <div class="score-row rank-5">
-                        <div class="rank">5</div>
-                        <div class="pt">5400<small>pt</small></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <button onclick="switchTab(1)">マイページ</button>
+      <button onclick="switchTab(2)">マイスコア</button>
     </div>
+    <div id="tab1">
+      <h3>ユーザー名</h3>
+      <input id="username" type="text" maxlength="15" placeholder="英数字のみ・15文字以内">
+      <span id="usernameError"></span>
+      <p id="usernameSuccess">ユーザー名を変更しました</p>
+      <button id="usernameBtn" onclick="handleUpdateUsername()">変更</button>
+    </div>
+    <div>
+      <!-- ✅ 称号エリア -->
+      <h3>称号</h3>
+      <p id="selectedTitleName">未選択</p>
+      <button onclick="openTitleModal()">変更</button>
+      <span id="titleError"></span>
+
+      <!-- ✅ 称号選択モーダル -->
+      <div id="titleModal" style="display: none;">
+        <h4>称号を選択してください</h4>
+        <ul id="titleList"></ul>
+        <button onclick="closeTitleModal()">閉じる</button>
+      </div>
+    </div>
+    <a href="">お問い合わせ</a>
+    <a href="" onclick="handleLogout(); return false;">ログアウト</a>
+    <button onclick="handleDelete()">退会する</button>
+    <div id="tab2">
+      <select name="subject" id="subject">
+        <option value="1">基本情報技術者試験</option>
+        <option value="2">ITパスポート</option>
+        <option value="3">英語</option>
+      </select>
+      <select name="level" id="level">
+        <option value="1">ノーマル</option>
+        <option value="2">ハード</option>
+      </select>
+      <div class="score-card">
+        <button class="carousel-arrow left">◀</button>
+        <button class="carousel-arrow right">▶</button>
+        <div class="score-title">マネジメント</div>
+
+        <div class="score-row rank-1">
+          <div class="rank">1</div>
+          <div class="pt">12800<small>pt</small></div>
+        </div>
+        <div class="score-row rank-2">
+          <div class="rank">2</div>
+          <div class="pt">10300<small>pt</small></div>
+        </div>
+        <div class="score-row rank-3">
+          <div class="rank">3</div>
+          <div class="pt">9300<small>pt</small></div>
+        </div>
+        <div class="score-row rank-4">
+          <div class="rank">4</div>
+          <div class="pt">7400<small>pt</small></div>
+        </div>
+        <div class="score-row rank-5">
+          <div class="rank">5</div>
+          <div class="pt">5400<small>pt</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // 称号データをページ全体で保持
+    let titleData = { titles: [], ownedTitleIds: [], selectedTitleId: null };
+
+    // ページ読み込み時にユーザー情報・称号情報を取得
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/user/me');
+        const data = await res.json();
+        document.getElementById('username').value = data.username;
+
+        if (data.usernameChangedThisMonth) {
+          document.getElementById('usernameBtn').disabled = true;
+          showError('usernameError', '今月はすでにユーザー名を変更済みです');
+        }
+      } catch (err) {
+        console.error('ユーザー情報の取得に失敗しました', err);
+      }
+
+      // ✅ 称号情報を取得
+      await loadTitles();
+    });
+
+    // ── 称号情報取得 ──────────────────────────────────────
+    async function loadTitles() {
+      try {
+        const res = await fetch('/api/user/titles');
+        titleData = await res.json();
+
+        // 選択中の称号名を表示
+        const selected = titleData.titles.find(t => t.id === titleData.selectedTitleId);
+        document.getElementById('selectedTitleName').textContent =
+                selected ? selected.name : '未選択';
+      } catch (err) {
+        console.error('称号情報の取得に失敗しました', err);
+      }
+    }
+
+    // ── モーダルを開く ────────────────────────────────────
+    function openTitleModal() {
+      const list = document.getElementById('titleList');
+      list.innerHTML = '';
+
+      titleData.titles.forEach(title => {
+        const owned = titleData.ownedTitleIds.includes(title.id);
+        const selected = title.id === titleData.selectedTitleId;
+
+        const li = document.createElement('li');
+        li.textContent = title.name + (selected ? '（選択中）' : '');
+
+        if (owned) {
+          // 所持している称号は選択可能
+          li.style.cursor = 'pointer';
+          li.onclick = () => selectTitle(title.id, title.name);
+        } else {
+          // 所持していない称号はグレーアウト
+          li.style.color = 'gray';
+          li.style.cursor = 'not-allowed';
+        }
+
+        list.appendChild(li);
+      });
+
+      document.getElementById('titleModal').style.display = 'block';
+    }
+
+    // ── モーダルを閉じる ──────────────────────────────────
+    function closeTitleModal() {
+      document.getElementById('titleModal').style.display = 'none';
+    }
+
+    // ── 称号を選択して更新 ────────────────────────────────
+    async function selectTitle(titleId, titleName) {
+      try {
+        const res = await fetch('/api/user/title', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ titleId })
+        });
+        if (!res.ok) throw new Error('称号の変更に失敗しました');
+
+        // 選択中の称号を更新
+        titleData.selectedTitleId = titleId;
+        document.getElementById('selectedTitleName').textContent = titleName;
+        closeTitleModal();
+      } catch (err) {
+        showError('titleError', err.message || '称号の変更に失敗しました');
+      }
+    }
+
+    // ── 既存の関数（変更なし）────────────────────────────
+    async function handleUpdateUsername() {
+      clearErrors();
+      const username = document.getElementById('username').value.trim();
+
+      if (!username) {
+        showError('usernameError', 'ユーザー名を入力してください'); return;
+      }
+      if (!/^[a-zA-Z0-9]{1,15}$/.test(username)) {
+        showError('usernameError', '英数字のみ・15文字以内で入力してください'); return;
+      }
+
+      setLoading(true);
+      try {
+        const res = await fetch('/api/user/username', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message, { cause: data.code });
+        document.getElementById('usernameSuccess').style.display = 'block';
+      } catch (err) {
+        showError('usernameError', err.message || 'ユーザー名の変更に失敗しました');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function handleLogout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/user/login';
+    }
+
+    async function handleDelete() {
+      if (!confirm('本当に退会しますか？\nスコア履歴・称号などのデータはすべて削除されます。')) return;
+      if (!confirm('退会すると元に戻せません。\n本当によろしいですか？')) return;
+
+      try {
+        const res = await fetch('/api/user/delete', { method: 'DELETE' });
+        if (!res.ok) throw new Error('退会処理に失敗しました');
+        window.location.href = '/user/login';
+      } catch (err) {
+        alert(err.message || '退会処理に失敗しました');
+      }
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('[id$="Error"]').forEach(el => {
+        el.textContent = '';
+        el.style.display = 'none';
+      });
+      document.getElementById('usernameSuccess').style.display = 'none';
+    }
+
+    function setLoading(loading) {
+      const btn = document.getElementById('usernameBtn');
+      btn.disabled    = loading;
+      btn.textContent = loading ? '変更中...' : '変更';
+    }
+
+    function switchTab(tabNumber) {
+      document.getElementById('tab1').style.display = 'none';
+      document.getElementById('tab2').style.display = 'none';
+      document.getElementById('tab' + tabNumber).style.display = 'block';
+    }
+  </script>
 </body>
 </html>
