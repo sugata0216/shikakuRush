@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>スタート</title>
+    <style>
+        body { cursor: pointer; }
+    </style>
 </head>
-<body>
-    <h1>Shikaku Rush!!!!</h1>
-    <p>Tap to Start</p>
+<body onclick="handleStart()">
+<h1>Shikaku Rush!!!!</h1>
+<p>Tap to Start</p>
+
+<script>
+    // セッションの有無はサーバー側で判断するためfetchで確認する
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('/api/user/me');
+            if (res.ok) {
+                // ログイン済み
+                document.body.onclick = () => window.location.href = '/user/top';
+            } else {
+                // 未ログイン
+                document.body.onclick = () => window.location.href = '/user/login';
+            }
+        } catch {
+            document.body.onclick = () => window.location.href = '/user/login';
+        }
+    });
+
+    function handleStart() {
+        // DOMContentLoadedで設定したonclickが実行されるため空でOK
+    }
+</script>
 </body>
 </html>
