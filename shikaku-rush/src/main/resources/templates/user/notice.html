@@ -1,11 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>お知らせ</title>
 </head>
 <body>
-    <h1>INFORMATION</h1>
-    <div>お知らせが入るよ</div>
+<h1>INFORMATION</h1>
+
+<div th:if="${#lists.isEmpty(notifications)}">
+    <p>現在お知らせはありません</p>
+</div>
+
+<!-- ✅ お知らせ一覧 -->
+<!-- ✅ data属性にIDを持たせてJavaScriptから取得する方式に変更 -->
+<div th:each="notification : ${notifications}">
+    <div th:attr="data-id=${notification.id}"
+         onclick="openModal(this.dataset.id)"
+         style="cursor: pointer;">
+        <p th:text="${notification.title}"></p>
+        <p th:text="${#temporals.format(notification.postedAt, 'yyyy/MM/dd')}"></p>
+    </div>
+
+    <div th:id="'modal-' + ${notification.id}" style="display: none;">
+        <div>
+            <button th:attr="onclick='closeModal(' + ${notification.id} + ')'">✕</button>
+            <h3 th:text="${notification.title}"></h3>
+            <p th:text="${#temporals.format(notification.postedAt, 'yyyy/MM/dd')}"></p>
+            <p th:text="${notification.body}"></p>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ メニューバー -->
+<div th:replace="~{user/layout :: menubar}"></div>
+
+<script>
+    function openModal(id) {
+        document.getElementById('modal-' + id).style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById('modal-' + id).style.display = 'none';
+    }
+</script>
 </body>
 </html>

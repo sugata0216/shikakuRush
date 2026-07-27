@@ -1,57 +1,43 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ランキング</title>
 </head>
-
 <body>
+<div>ランキング</div>
 
-    <div>ランキング</div>
+<!-- ✅ ジャンル・難易度選択フォーム -->
+<form th:action="@{/user/ranking}" method="get">
+    <select name="genreId">
+        <option value="1" th:selected="${selectedGenreId == 1}">ITパスポート</option>
+        <option value="2" th:selected="${selectedGenreId == 2}">基本情報技術者試験</option>
+        <option value="3" th:selected="${selectedGenreId == 3}">英語</option>
+    </select>
+    <select name="difficultyId">
+        <option th:each="difficulty : ${difficulties}"
+                th:value="${difficulty.id}"
+                th:text="${difficulty.name}"
+                th:selected="${difficulty.id == selectedDifficultyId}">
+        </option>
+    </select>
+    <button type="submit">表示</button>
+</form>
 
-    <div>
-        <div>
-            <div>基本情報 ▼</div>
-            <div>難易度 ▼</div>
-        </div>
-
-        <div>
-            <button>◀</button>
-
-            <div>
-                <div>マネジメント</div>
-
-                <div>
-                    <p>順位</p>
-                    <p>ユーザー名が入る</p>
-                    <p>スコアが表示されるよ</p>
-                </div>
-                <div>
-                    <p>順位</p>
-                    <p>ユーザー名が入る</p>
-                    <p>スコアが表示されるよ</p>
-                </div>
-                <div>
-                    <p>順位</p>
-                    <p>ユーザー名が入る</p>
-                    <p>スコアが表示されるよ</p>
-                </div>
-                <div>
-                    <p>順位</p>
-                    <p>ユーザー名が入る</p>
-                    <p>スコアが表示されるよ</p>
-                </div>
-                <div>
-                    <p>順位</p>
-                    <p>ユーザー名が入る</p>
-                    <p>スコアが表示されるよ</p>
-                </div>
-            </div>
-
-            <button>▶</button>
-        </div>
+<!-- ✅ ランキング一覧 -->
+<div>
+    <div th:if="${#lists.isEmpty(rankings)}">
+        <p>まだランキングデータがありません</p>
     </div>
-</body>
 
+    <div th:each="ranking, iterStat : ${rankings}">
+        <p th:text="${iterStat.index + 1}"></p>
+        <p th:text="${ranking.username}"></p>
+        <p th:text="${ranking.score}"></p>
+    </div>
+</div>
+
+<!-- ✅ メニューバー -->
+<div th:replace="~{user/layout :: menubar}"></div>
+</body>
 </html>

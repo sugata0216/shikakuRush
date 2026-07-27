@@ -22,28 +22,53 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/user/start/go",
                                 "/user/login",
+                                "/user/logout",
                                 "/user/registered-email",
+                                "/user/send-registration-email",
                                 "/user/registration",
                                 "/user/top",
                                 "/user/my-page",
-                                "/api/auth/login",
-                                "/api/auth/register/send-email",
-                                "/api/auth/register/complete",
+                                "/user/my-page/username",
+                                "/user/my-page/title",
+                                "/user/my-page/delete",
                                 "/user/password-reset-email",
                                 "/user/password-reset",
                                 "/user/password-reset-complete",
-                                "/api/auth/password-reset/send-email",
-                                "/api/auth/password-reset/complete",
-                                "/api/user/titles",
-                                "/api/user/title"
+                                "/user/genre",
+                                "/user/category",
+                                "/user/difficulty",
+                                "/user/loading",
+                                "/user/game",
+                                "/user/game/change",
+                                "/user/game/answer",
+                                "/user/game/giveup",
+                                "/user/result",
+                                "/user/inquiry",
+                                "/user/notification",
+                                "/user/notice",
+                                "/user/ranking",
+                                "/user/help",
+                                "/api/**",
+                                "/admin/login",
+                                "/admin/top",
+                                "/admin/logout",
+                                "/admin/**"
                         ).permitAll()
-                        .requestMatchers("/api/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/login")
                         .loginProcessingUrl("/security/login")
+                        .defaultSuccessUrl("/user/start")
+                        .failureUrl("/user/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/user/logout")
+                        .logoutSuccessUrl("/user/login")
+                        .invalidateHttpSession(true)
                         .permitAll()
                 );
         return http.build();

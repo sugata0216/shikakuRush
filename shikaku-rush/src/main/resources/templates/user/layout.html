@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>レイアウト</title>
 </head>
 <body>
+<!-- ✅ th:fragment でフラグメントとして定義 -->
+<div th:fragment="menubar">
     <div>
-        <div>
+        <a th:href="@{/user/top}">
             <img src="">
             <p>TOP</p>
-        </div>
-        <div>
+        </a>
+    </div>
+    <div>
+        <a th:href="@{/user/my-page}">
             <img src="">
             <p>マイページ</p>
-        </div>
-        <div>
+        </a>
+    </div>
+    <div>
+        <a th:href="@{/user/help}">
             <img src="">
             <p>ヘルプ</p>
-        </div>
-        <div>
+        </a>
+    </div>
+    <div>
+        <a th:href="@{/user/notification}">
             <img src="">
             <p>お知らせ</p>
-        </div>
+        </a>
     </div>
+</div>
 </body>
 </html>

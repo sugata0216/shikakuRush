@@ -1,18 +1,103 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ヘルプ</title>
 </head>
 <body>
-    <h1>Help</h1>
-    <div>
-        <div>各画面説明</div>
-        <div>ゲームルール説明</div>
-        <div>ゲーム外説明</div>
-        <div>称号説明</div>
-        <div>その他</div>
-    </div>
+<h1>Help</h1>
 
+<div>
+    <!-- ✅ 各コンテンツをタップするとポップアップ表示 -->
+    <div onclick="openModal('screenModal')" style="cursor: pointer;">各画面説明</div>
+    <div onclick="openModal('ruleModal')" style="cursor: pointer;">ゲームルール説明</div>
+    <div onclick="openModal('outsideModal')" style="cursor: pointer;">ゲーム外説明</div>
+    <div onclick="openModal('titleModal')" style="cursor: pointer;">称号説明</div>
+    <div onclick="openModal('otherModal')" style="cursor: pointer;">その他</div>
+</div>
+
+<!-- ✅ 各画面説明モーダル -->
+<div id="screenModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('screenModal')">✕</button>
+        <h3>各画面説明</h3>
+        <p><b>スタート画面</b>：タップするとトップ画面に遷移します。</p>
+        <p><b>ジャンル選択画面</b>：ITパスポート・基本情報技術者・英語の3つのジャンルから選択します。</p>
+        <p><b>カテゴリ選択画面</b>：選択したジャンルの出題カテゴリを選択します。ALLを選ぶと全カテゴリから出題されます。</p>
+        <p><b>難易度選択画面</b>：ノーマルまたはハードを選択します。難易度によってスコアの計算方法が異なります。</p>
+        <p><b>ゲーム画面</b>：制限時間内に4択の問題に答えます。全10問出題されます。</p>
+        <p><b>リザルト画面</b>：ゲーム終了後にスコアと解説が表示されます。</p>
+    </div>
+</div>
+
+<!-- ✅ ゲームルール説明モーダル -->
+<div id="ruleModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('ruleModal')">✕</button>
+        <h3>ゲームルール説明</h3>
+        <p><b>出題数</b>：1ゲームにつき10問出題されます。</p>
+        <p><b>制限時間</b>：ITパスポート・基本情報技術者は1問30秒、英語は1問15秒です。</p>
+        <p><b>スコア計算（ノーマル）</b>：正解数×10 + 連続正解数×50 + 残り時間×10</p>
+        <p><b>スコア計算（ハード）</b>：正解数×100 + 連続正解数×50 + 残り時間×10</p>
+        <p><b>Changeボタン</b>：1ゲームにつき1回だけ現在の問題を別の問題に入れ替えられます。</p>
+        <p><b>Give Upボタン</b>：ゲームを中断してジャンル選択画面に戻ります。スコアは記録されません。</p>
+        <p><b>時間切れ</b>：制限時間を超えると自動的に不正解となり次の問題に進みます。</p>
+    </div>
+</div>
+
+<!-- ✅ ゲーム外説明モーダル -->
+<div id="outsideModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('outsideModal')">✕</button>
+        <h3>ゲーム外説明</h3>
+        <p><b>ランキング</b>：ジャンル・難易度別の月間ランキングが確認できます。全カテゴリを選択してゲームをプレイするとランキングに反映されます。</p>
+        <p><b>マイページ</b>：ユーザー名・称号の変更、マイスコアの確認ができます。ユーザー名の変更は1ヶ月に1回のみ可能です。</p>
+        <p><b>マイスコア</b>：ジャンル・難易度・カテゴリ別の自分のスコア上位5件が確認できます。</p>
+        <p><b>お知らせ</b>：管理者からのお知らせを確認できます。当月分のお知らせが表示されます。</p>
+    </div>
+</div>
+
+<!-- ✅ 称号説明モーダル -->
+<div id="titleModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('titleModal')">✕</button>
+        <h3>称号説明</h3>
+        <p>称号はランキング上位入賞者に毎月付与される特別な肩書きです。</p>
+        <p><b>付与条件</b>：月間ランキングで1位・2位・3位に入賞すると称号が付与されます。</p>
+        <p><b>称号の種類</b>：ジャンル・難易度・順位の組み合わせによって異なる称号が存在します。</p>
+        <p><b>称号の選択</b>：マイページから獲得済みの称号を選択してプロフィールに表示できます。</p>
+    </div>
+</div>
+
+<!-- ✅ その他モーダル -->
+<div id="otherModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('otherModal')">✕</button>
+        <h3>その他</h3>
+        <p><b>お問い合わせ</b>：マイページのお問い合わせリンクからタイトルと内容を入力して送信できます。運営が確認次第対応いたします。</p>
+        <p><b>退会</b>：マイページから退会できます。退会するとスコア履歴・称号などのデータはすべて削除され元に戻せません。</p>
+        <p><b>パスワードリセット</b>：ログイン画面の「パスワードを忘れた方はこちら」から登録メールアドレスにリセットリンクを送信できます。</p>
+    </div>
+</div>
+
+<!-- ✅ メニューバー -->
+<div th:replace="~{user/layout :: menubar}"></div>
+
+<script>
+    function openModal(id) {
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    // ✅ モーダル外クリックで閉じる
+    document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) closeModal(this.id);
+        });
+    });
+</script>
 </body>
 </html>

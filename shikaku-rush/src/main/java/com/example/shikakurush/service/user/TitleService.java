@@ -16,27 +16,27 @@ public class TitleService {
         this.titleRepository = titleRepository;
     }
 
-    // ── 全称号一覧と所持情報を取得 ────────────────────────
+    // 全称号一覧と所持情報を取得
     public List<Title> findAll() {
         return titleRepository.findAll();
     }
 
-    // ── ユーザーの所持称号IDリストを取得 ──────────────────
+    // ユーザーの所持称号IDリストを取得
     public List<Integer> findOwnedTitleIds(int userId) {
         return titleRepository.findOwnedTitleIdsByUserId(userId);
     }
 
-    // ── 現在選択中の称号IDを取得 ──────────────────────────
+    // 現在選択中の称号IDを取得
     public Integer findSelectedTitleId(int userId) {
         return titleRepository.findSelectedTitleIdByUserId(userId);
     }
 
-    // ── 選択中の称号を更新 ────────────────────────────────
+    // 選択中の称号を更新
     public void updateSelectedTitle(int userId, int titleId) {
         // 所持しているか確認
         List<Integer> ownedTitleIds = titleRepository.findOwnedTitleIdsByUserId(userId);
         if (!ownedTitleIds.contains(titleId)) {
-            throw AuthException.forbidden(); // 所持していない称号は選択不可
+            throw AuthException.forbidden();
         }
         titleRepository.updateSelectedTitle(userId, titleId);
     }
