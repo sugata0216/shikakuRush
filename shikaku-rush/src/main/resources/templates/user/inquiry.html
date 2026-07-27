@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お問い合わせ</title>
+</head>
+<body>
+<h1>お問い合わせ</h1>
+
+<!-- ✅ 成功メッセージ -->
+<p th:if="${successMessage}" th:text="${successMessage}"></p>
+
+<!-- ✅ エラーメッセージ -->
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+<form th:action="@{/user/inquiry}" method="post">
+    <label>タイトル</label>
+    <input type="text" name="title" required maxlength="255">
+
+    <label>本文</label>
+    <textarea name="body" required></textarea>
+
+    <button type="submit">送信する</button>
+</form>
+
+<!-- ✅ 戻るボタン -->
+<a href="/user/my-page">マイページに戻る</a>
+</body>
+</html>

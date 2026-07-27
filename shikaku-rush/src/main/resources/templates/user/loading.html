@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ローディング</title>
@@ -10,7 +10,7 @@
         <p>デジタルデータトンネルを進み、現れるコンピューターウイルスを倒してウイルスからの感染を防ごう！</p>
         <img src="">
         <p>4つの選択肢の中から正解を選んでウイルスを撃退しよう！</p>
-        <p>画面下部にあるボタン をうまく使用してバトルを円滑に進めよう！</p>
+        <p>画面下部にあるボタンをうまく使用してバトルを円滑に進めよう！</p>
         <ul>
             <li>
                 <p>Change</p>
@@ -22,6 +22,10 @@
             </li>
         </ul>
     </div>
-    <p>Tap to Start</p>
+
+    <!-- ✅ タップしたらゲーム画面へ遷移 -->
+    <a th:href="@{/user/game}">
+        <p>Tap to Start</p>
+    </a>
 </body>
 </html>

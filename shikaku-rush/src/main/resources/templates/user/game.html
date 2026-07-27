@@ -1,55 +1,91 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ゲーム</title>
 </head>
-
 <body>
+<div>
     <div>
-        <div>
-            <h4>Category</h4>
-            <h4>ジャンル</h4>
-        </div>
-        <div>
-            <h4>Time</h4>
-            <h3>時間が入ります</h3>
-        </div>
-        <div>
-            <h4>question</h4>
-            <h4>2/10</h4>
-        </div>
-    </div>
-
-    <img src="" alt="">
-
-    <div>
-        <div>question</div>
-        <p>ここに問題文が入る予定です</p>
+        <h4>Category</h4>
+        <h4 th:text="${categoryName}"></h4>
     </div>
     <div>
-        <div>
+        <h4>Time</h4>
+        <!-- 制限時間をThymeleafで初期値としてセット -->
+        <h3 id="timer" th:text="${timeLimit}"></h3>
+    </div>
+    <div>
+        <h4>question</h4>
+        <h4 th:text="${currentIndex + 1} + '/' + ${totalQuestions}"></h4>
+    </div>
+</div>
+
+<img src="" alt="">
+
+<div>
+    <div>question</div>
+    <p th:text="${question.questionText}"></p>
+</div>
+
+<!-- 選択肢をフォームのボタンで送信 -->
+<form th:action="@{/user/game/answer}" method="post">
+    <input type="hidden" name="answer" id="answerInput" value="">
+    <input type="hidden" name="timeLeft" id="timeLeftInput" value="60">
+    <div>
+        <div th:onclick="|submitAnswer('1')|" style="cursor: pointer;">
             <div>A</div>
-            <p>シンジ</p>
+            <p th:text="${question.choice1}"></p>
         </div>
-        <div>
+        <div th:onclick="|submitAnswer('2')|" style="cursor: pointer;">
             <div>B</div>
-            <p>EVA</p>
+            <p th:text="${question.choice2}"></p>
         </div>
-        <div>
+        <div th:onclick="|submitAnswer('3')|" style="cursor: pointer;">
             <div>C</div>
-            <p>に乗れ</p>
+            <p th:text="${question.choice3}"></p>
         </div>
-        <div>
+        <div th:onclick="|submitAnswer('4')|" style="cursor: pointer;">
             <div>D</div>
-            <p>そうでなければ帰れ</p>
+            <p th:text="${question.choice4}"></p>
         </div>
     </div>
-    <div>
-        <button type="button">Change</button>
-        <button type="button">give up</button>
-    </div>
-</body>
+    <input type="hidden" name="timedOut" id="timedOutInput" value="false">
+</form>
 
+<div>
+    <button type="button"
+            th:disabled="${changeUsed}"
+            onclick="window.location.href='/user/game/change'">Change</button>
+    <!-- Give upもフォームでPOST送信 -->
+    <form th:action="@{/user/game/giveup}" method="post">
+        <button type="submit">Give Up</button>
+    </form>
+</div>
+
+<script>
+    // タイマーの初期値をThymeleafから受け取る
+    let timeLeft = /*[[${timeLimit}]]*/ 30;
+    const timerEl = document.getElementById('timer');
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        document.getElementById('timeLeftInput').value = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            document.getElementById('timedOutInput').value = 'true';
+            document.getElementById('answerInput').value = '';
+            document.querySelector('form').submit();
+        }
+    }, 1000);
+
+    function submitAnswer(answer) {
+        clearInterval(timer);
+        document.getElementById('answerInput').value = answer;
+        document.querySelector('form').submit();
+    }
+</script>
+</body>
 </html>

@@ -39,7 +39,7 @@ public class PasswordResetService {
         this.mailSender      = mailSender;
     }
 
-    // ── パスワードリセットメール送信 ──────────────────────
+    // パスワードリセットメール送信
     @Transactional
     public void sendPasswordResetEmail(String email) {
         User user = userRepository.findByEmail(email);
@@ -66,18 +66,25 @@ public class PasswordResetService {
         mailSender.send(mail);
     }
 
-    // ── パスワードリセット完了 ────────────────────────────
+    // トークン検証
+    public void validateToken(String token) {
+        PasswordResetToken prt = tokenRepository.findByToken(token);
+        if (prt == null)     throw AuthException.tokenInvalid();
+        if (prt.isUsed())    throw AuthException.tokenInvalid();
+        if (prt.isExpired()) throw AuthException.tokenExpired();
+    }
+
+    // パスワードリセット完了
     @Transactional
     public void resetPassword(String token, String password, String passwordConfirm) {
         if (!password.equals(passwordConfirm)) {
             throw AuthException.passwordMismatch();
         }
 
-        PasswordResetToken prt = tokenRepository.findByToken(token);
-        if (prt == null)     throw AuthException.tokenInvalid();
-        if (prt.isUsed())    throw AuthException.tokenInvalid();
-        if (prt.isExpired()) throw AuthException.tokenExpired();
+        // validateTokenを再利用
+        validateToken(token);
 
+        PasswordResetToken prt = tokenRepository.findByToken(token);
         userRepository.updatePassword(prt.getUserId(), passwordEncoder.encode(password));
         tokenRepository.markAsUsed(token);
     }

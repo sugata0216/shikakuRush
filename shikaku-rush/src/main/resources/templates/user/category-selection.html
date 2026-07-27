@@ -1,24 +1,25 @@
+<!-- category.html -->
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>カテゴリ選択</title>
 </head>
 <body>
     <h1>Category Select</h1>
-    <div>
-        <div>
-            <p>ALL</p>
-        </div>
-        <div>
-            <p>テクノロジー</p>
-        </div>
-        <div>
-            <p>ストラテジ</p>
-        </div>
+
+    <!-- DBから取得したカテゴリをそのまま表示-->
+    <div th:each="category : ${categories}">
+        <a th:href="@{/user/difficulty(genreId=${genreId}, categoryId=${category.id})}">
+            <p th:text="${category.name}"></p>
+        </a>
     </div>
+
+    <!-- 戻るボタン -->
     <div>
-        <p>⇦</p>
+        <a href="/user/genre">⇦</a>
     </div>
+    <!-- th:replace でフラグメントを埋め込む -->
+    <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

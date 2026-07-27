@@ -1,5 +1,6 @@
+<!-- difficulty.html -->
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>難易度選択</title>
@@ -7,7 +8,18 @@
 <body>
     <h1>Level Select</h1>
 
-    <a href="">ノーマル</a>
-    <a href="">ハード</a>
+    <!-- Thymeleafで難易度一覧を表示 -->
+    <div th:each="difficulty : ${difficulties}">
+        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficulty.id})}">
+            <p th:text="${difficulty.name}"></p>
+        </a>
+    </div>
+
+    <!-- 戻るボタン -->
+    <div>
+        <a th:href="@{/user/category(genreId=${genreId})}">⇦</a>
+    </div>
+    <!-- th:replace でフラグメントを埋め込む -->
+    <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

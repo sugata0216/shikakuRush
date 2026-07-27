@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface UserDeleteMapper {
 
-    // 既存のメソッド（そのまま）
     @Delete("DELETE FROM score_history_questions WHERE score_history_id IN " +
             "(SELECT id FROM score_histories WHERE user_id = #{userId})")
     void deleteScoreHistoryQuestions(@Param("userId") Integer userId);
@@ -19,7 +18,6 @@ public interface UserDeleteMapper {
     @Delete("DELETE FROM user_titles WHERE user_id = #{userId}")
     void deleteUserTitles(@Param("userId") Integer userId);
 
-    // 追加するメソッド
     @Update("UPDATE inquiries SET user_id = NULL WHERE user_id = #{userId}")
     void nullifyInquiryUserId(@Param("userId") Integer userId);
 

@@ -1,89 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>管理者TOP</title>
 </head>
-
 <body>
-    <select name="" id="">
-        <option value="1">猿舘風人</option>
-        <option value="2">菅田健</option>
-        <option value="3">玉山氷龍</option>
-        <option value="4">髙橋龍ノ介</option>
-    </select>
-    <hr>
     <div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-            </div>
-        </div>
-        <div href="">
-            <img src="" alt="">
-            <div>
-                <h2>画面の名前</h2>
-                <p>説明</p>
-                <button></button>
-            </div>
-        </div>
-    </div>
-    <p>押すなよ絶対に押すなよ</p>
-    <div>
-        <p>システムアラート</p>
         <div>
-            <div>丸の図形があってオンの時とオフの時で色変える</div>
-            <p>未確認のお問合せ:3件</p>
-            <div>丸の図形があってオンの時とオフの時で色変える</div>
-            <p>メンテナンスモード:OFF</p>
+            <a th:href="@{/admin/question/list}">
+                <h2>問題管理</h2>
+                <p>問題一覧画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/report}">
+                <h2>レポート</h2>
+                <p>問題報告確認画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/inquiry}">
+                <h2>お問い合わせ</h2>
+                <p>お問い合わせ確認画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/user}">
+                <h2>ユーザー管理メニュー</h2>
+                <p>ユーザー管理メニュー画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/banned-word}">
+                <h2>禁止ワード管理</h2>
+                <p>禁止ワード管理画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/notification}">
+                <h2>お知らせ管理</h2>
+                <p>お知らせ管理画面</p>
+            </a>
+        </div>
+        <div>
+            <a th:href="@{/admin/temp-question}">
+                <h2>データ管理</h2>
+                <p>仮保存テーブル一覧画面</p>
+            </a>
         </div>
     </div>
 
-</body>
+    <!-- メンテナンスモード切り替え -->
+    <div>
+        <p>システム設定</p>
 
+        <!-- 完了メッセージ -->
+        <p th:if="${maintenanceMessage}"
+           th:text="${maintenanceMessage}"></p>
+
+        <!-- メンテナンスモードの状態表示 -->
+        <div>
+            <!-- ONの場合は緑・OFFの場合は赤で表示 -->
+            <div th:style="${maintenanceMode} ? 'color: green;' : 'color: red;'">●</div>
+            <p th:text="${maintenanceMode} ? 'メンテナンスモード: ON' : 'メンテナンスモード: OFF'"></p>
+        </div>
+
+        <!-- 切り替えボタン -->
+        <form th:action="@{/admin/maintenance/toggle}" method="post">
+            <button type="submit"
+                    th:text="${maintenanceMode} ? 'メンテナンスモードをOFFにする' : 'メンテナンスモードをONにする'">
+            </button>
+        </form>
+    </div>
+
+    <!-- ログアウト -->
+    <form th:action="@{/admin/logout}" method="post">
+        <button type="submit">ログアウト</button>
+    </form>
+</body>
 </html>

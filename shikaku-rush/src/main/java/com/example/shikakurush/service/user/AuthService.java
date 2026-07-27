@@ -88,6 +88,14 @@ public class AuthService {
         if (prt.isUsed())    throw AuthException.tokenInvalid();
         if (prt.isExpired()) throw AuthException.tokenExpired();
 
+        // ユーザー名バリデーション
+        if (username == null || username.trim().isEmpty()) {
+            throw new AuthException("INVALID_USERNAME", "ユーザーネームを入力してください");
+        }
+        if (!username.matches("^[a-zA-Z0-9]{1,15}$")) {
+            throw new AuthException("INVALID_USERNAME", "ユーザーネームは英数字のみ・15文字以内で入力してください");
+        }
+
         if (userRepository.existsByEmail(prt.getEmail())) {
             throw AuthException.emailAlreadyExists();
         }
@@ -103,8 +111,10 @@ public class AuthService {
 
         tokenRepository.markAsUsed(token);
 
+        // 登録したユーザーを返す
         return userRepository.findByEmail(prt.getEmail());
     }
+
     // 登録トークン検証
     public PasswordResetToken validateRegistrationToken(String token) {
 

@@ -1,5 +1,6 @@
 package com.example.shikakurush.controller.user;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TopController {
 
     @GetMapping("/top")
-    public String top() {
+    public String top(HttpSession session) {
+        if (session.getAttribute("userId") == null) {
+            return "redirect:/user/login";
+        }
         return "user/top";
     }
 }

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>TOP</title>
 </head>
 <body>
     <h2>Shikaku Rush!!!!</h2>
-    <a href="genre-selection.html">ジャンル選択</a>
-    <a href="ranking.html">ランキング</a>
+    <a th:href="@{/user/genre}">ジャンル選択</a>
+    <a th:href="@{/user/ranking}">ランキング</a>
+
+    <!-- ✅ メニューバーを埋め込む -->
+    <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

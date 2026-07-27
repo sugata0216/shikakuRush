@@ -15,7 +15,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // ── ユーザー名変更 ────────────────────────────────────
+    // ユーザー名変更
     @Transactional
     public void updateUsername(Integer userId, String username) {
         User user = userRepository.findById(userId);

@@ -6,103 +6,39 @@
 </head>
 <body>
 <div>
-  <form onsubmit="handleRegister(); return false;">
-    <input type="hidden" name="token" th:value="${token}"> <!-- ✅ トークンを保持 -->
-    <label>ユーザーネーム</label>
-    <input id="username" type="text" maxlength="15">
-    <p>(15文字以内・英数字のみ・記号/日本語禁止)</p>
-    <span id="usernameError"></span>
-    <label>パスワード</label>
-    <input id="password" type="password">
-    <span id="passwordError"></span>
-    <label>パスワード再入力</label>
-    <input id="passwordConfirm" type="password">
-    <span id="passwordConfirmError"></span>
-    <p id="formError"></p>
-    <p id="tokenError">
-      このリンクは無効または期限切れです。<a href="/user/registered-email">メールアドレス入力に戻る ▶</a>
+  <!-- トークンエラー -->
+  <div th:if="${tokenError}">
+    <p>このリンクは無効または期限切れです。
+      <a th:href="@{/user/registered-email}">メールアドレス入力に戻る ▶</a>
     </p>
-    <button id="registerBtn" type="submit">登録</button>
-  </form>
+  </div>
+
+  <!-- 登録フォーム -->
+  <div th:if="${!tokenError}">
+    <!-- エラーメッセージ -->
+    <p th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/user/registration}" method="post">
+      <!-- トークンを隠しフィールドで保持 -->
+      <input type="hidden" name="token" th:value="${token}">
+
+      <label>ユーザーネーム</label>
+      <input type="text" name="username" maxlength="15"
+             th:value="${username}" required>
+      <p>(15文字以内・英数字のみ・記号/日本語禁止)</p>
+      <span th:if="${usernameError}" th:text="${usernameError}"></span>
+
+      <label>パスワード</label>
+      <input type="password" name="password" required>
+      <span th:if="${passwordError}" th:text="${passwordError}"></span>
+
+      <label>パスワード再入力</label>
+      <input type="password" name="passwordConfirm" required>
+      <span th:if="${passwordConfirmError}" th:text="${passwordConfirmError}"></span>
+
+      <button type="submit">登録</button>
+    </form>
+  </div>
 </div>
-
-<script>
-  // URLからトークンを取得
-  const token = new URLSearchParams(location.search).get('token');
-  if (!token) {
-    document.getElementById('tokenError').style.display = 'block';
-    document.getElementById('registerBtn').style.display = 'none';
-  }
-
-  async function handleRegister() {
-    clearErrors();
-    const username        = document.getElementById('username').value.trim();
-    const password        = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('passwordConfirm').value;
-    let valid = true;
-
-    if (!username) {
-      showError('usernameError', 'ユーザーネームを入力してください'); valid = false;
-    } else if (!/^[a-zA-Z0-9]{1,15}$/.test(username)) {
-      showError('usernameError', '英数字のみ・15文字以内で入力してください'); valid = false;
-    }
-
-    if (!password) {
-      showError('passwordError', 'パスワードを入力してください'); valid = false;
-    } else if (password.length < 8) {
-      showError('passwordError', 'パスワードは8文字以上で入力してください'); valid = false;
-    }
-
-    if (!passwordConfirm) {
-      showError('passwordConfirmError', 'パスワードを再入力してください'); valid = false;
-    } else if (password !== passwordConfirm) {
-      showError('passwordConfirmError', 'パスワードが一致しません'); valid = false;
-    }
-
-    if (!valid) return;
-
-    setLoading(true);
-    try {
-      const res  = await fetch('/api/auth/register/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, username, password })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message, { cause: data.code });
-      window.location.href = '/user/login';
-    } catch (err) {
-      if (err.cause === 'USERNAME_TAKEN') {
-        showError('usernameError', 'このユーザーネームはすでに使われています');
-      } else if (err.cause === 'TOKEN_EXPIRED' || err.cause === 'TOKEN_INVALID') {
-        document.getElementById('tokenError').style.display = 'block';
-        document.getElementById('registerBtn').style.display = 'none';
-      } else {
-        showError('formError', err.message || '登録に失敗しました。しばらく経ってからお試しください');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function showError(id, msg) {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-
-  function clearErrors() {
-    document.querySelectorAll('[id$="Error"]').forEach(el => {
-      el.textContent = '';
-      el.style.display = 'none';
-    });
-  }
-
-  function setLoading(loading) {
-    const btn = document.getElementById('registerBtn');
-    btn.disabled    = loading;
-    btn.textContent = loading ? '送信中...' : '登録';
-  }
-</script>
 </body>
 </html>
