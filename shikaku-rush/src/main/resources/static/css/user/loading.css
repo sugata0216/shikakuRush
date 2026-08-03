@@ -1,0 +1,134 @@
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url("../../img/background_img.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+    justify-content: center;
+    padding: 24px 20px;
+    box-sizing: border-box;
+}
+
+.explain-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    text-align: left;   
+}
+
+.explain-title {
+    text-align: center;    
+    font-size: 26px;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0 0 16px;
+}
+
+.explain-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: #1a1a2e;
+    margin: 0 0 12px;
+    text-align: left;  
+}
+
+
+.explain-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #0a1a2f;
+    border-radius: 8px;
+    margin: 12px 0 16px;
+    object-fit: cover;
+}
+
+.explain-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+}
+
+.explain-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start; 
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.item-label {
+    margin: 0;
+    font-weight: 800;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.item-desc {
+    margin: 0;
+    color: #1a1a2e;
+}
+
+.item-change .item-label {
+    color: #2fa84f;
+}
+
+.item-giveup .item-label {
+    color: #e63232;
+}
+
+.start-link {
+    display: block;
+    text-decoration: none;
+    margin-top: 32px;
+}
+
+.start-text {
+    margin: 0;
+    text-align: center;     
+    font-family: "Courier New", monospace;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ff4444;
+    text-shadow:
+        0 0 8px rgba(255, 68, 68, 0.8),
+        0 0 20px rgba(255, 68, 68, 0.5);
+    animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.explain-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-image: url("../../img/loading_img.png"); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    margin: 12px 0 16px;
+}

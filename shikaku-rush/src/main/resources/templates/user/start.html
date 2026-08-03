@@ -2,14 +2,16 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>スタート</title>
-    <style>
-        body { cursor: pointer; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/user/start.css}" />
 </head>
 <body onclick="window.location.href='/user/start/go'">
-<h1>Shikaku Rush!!!!</h1>
-<p>Tap to Start</p>
-<div th:replace="~{user/layout :: menubar}"></div>
+    <main class="main-container">
+        <h1 class="start-title">Shikaku<br>Rush!!!!</h1>
+        <p class="start-tap">Tap to Start</p>
+    </main>
+
+    <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

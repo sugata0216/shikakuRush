@@ -2,31 +2,36 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ジャンル選択</title>
+    <link rel="stylesheet" th:href="@{/css/user/genre-selection.css}" />
 </head>
 <body>
-    <h1>Genre Select</h1>
+    <main class="main-container">
+        <h1 class="page-title">Genre Select</h1>
 
-    <!-- ジャンル固定（DBから取得しない） -->
-    <div>
-        <a th:href="@{/user/category(genreId=1)}">
-            <p>ITパスポート</p>
-            <p>まずはここから！IT系の入り口</p>
-        </a>
-    </div>
-    <div>
-        <a th:href="@{/user/category(genreId=2)}">
-            <p>基本情報</p>
-            <p>ここを目指そう！IT系の基本</p>
-        </a>
-    </div>
-    <div>
-        <a th:href="@{/user/category(genreId=3)}">
-            <p>英語</p>
-            <p>ITを学ぶ前に！IT系の予備知識</p>
-        </a>
-    </div>
-    <!-- ✅ th:replace でフラグメントを埋め込む -->
+        <div class="genre-list">
+            <div class="genre-item genre-1">
+                <a th:href="@{/user/category(genreId=1)}">
+                    <p class="genre-name">ITパスポート</p>
+                    <p class="genre-desc">まずはここから！IT系の入り口</p>
+                </a>
+            </div>
+            <div class="genre-item genre-2">
+                <a th:href="@{/user/category(genreId=2)}">
+                    <p class="genre-name">基本情報</p>
+                    <p class="genre-desc">ここを目指そう！IT系の基本</p>
+                </a>
+            </div>
+            <div class="genre-item genre-3">
+                <a th:href="@{/user/category(genreId=3)}">
+                    <p class="genre-name">英語</p>
+                    <p class="genre-desc">ITを学ぶ前に！IT系の予備知識</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
     <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

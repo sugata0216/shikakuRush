@@ -54,7 +54,9 @@ public class SecurityConfig {
                                 "/admin/login",
                                 "/admin/top",
                                 "/admin/logout",
-                                "/admin/**"
+                                "/admin/**",
+                                "/css/**",
+                                "/img/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
