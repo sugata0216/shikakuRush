@@ -15,7 +15,19 @@ public class RankingRepository {
         this.rankingMapper = rankingMapper;
     }
 
-    public List<Ranking> findTop10(int genreId, int difficultyId) {
-        return rankingMapper.findTop10(genreId, difficultyId);
+    public List<Ranking> findTop5(int genreId, int difficultyId) {
+        return rankingMapper.findTop5(genreId, difficultyId);
+    }
+
+    public Ranking findByUserAndGenreAndDifficulty(int userId, int genreId, int difficultyId) {
+        return rankingMapper.findByUserAndGenreAndDifficulty(userId, genreId, difficultyId);
+    }
+
+    public void insert(Ranking ranking) {
+        rankingMapper.insert(ranking);
+    }
+
+    public void upsertRanking(int userId, int genreId, int difficultyId, int score) {
+        rankingMapper.upsertRanking(userId, genreId, difficultyId, score);
     }
 }

@@ -15,7 +15,24 @@ public class RankingService {
         this.rankingRepository = rankingRepository;
     }
 
-    public List<Ranking> findTop10(int genreId, int difficultyId) {
-        return rankingRepository.findTop10(genreId, difficultyId);
+    public List<Ranking> findTop5(int genreId, int difficultyId) {
+        return rankingRepository.findTop5(genreId, difficultyId);
+    }
+
+    // ── ランキング登録・更新 ──────────────────────────────
+    public void saveOrUpdate(int userId, int genreId, int difficultyId, int score) {
+        Ranking existing = rankingRepository.findByUserAndGenreAndDifficulty(
+                userId, genreId, difficultyId);
+
+        if (existing == null) {
+            Ranking ranking = new Ranking();
+            ranking.setUserId(userId);
+            ranking.setGenreId(genreId);
+            ranking.setDifficultyId(difficultyId);
+            ranking.setScore(score);
+            rankingRepository.insert(ranking);
+        } else if (score > existing.getScore()) {
+            rankingRepository.upsertRanking(userId, genreId, difficultyId, score);
+        }
     }
 }

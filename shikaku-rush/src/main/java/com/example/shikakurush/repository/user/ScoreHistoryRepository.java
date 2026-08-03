@@ -18,4 +18,8 @@ public class ScoreHistoryRepository {
     public List<ScoreHistory> findTop5(int userId, int categoryId, int difficultyId) {
         return scoreHistoryMapper.findTop5(userId, categoryId, difficultyId);
     }
+
+    public void save(ScoreHistory scoreHistory) {
+        scoreHistoryMapper.insert(scoreHistory);
+    }
 }

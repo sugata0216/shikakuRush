@@ -1,6 +1,7 @@
 package com.example.shikakurush.entity;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class Question {
@@ -15,4 +16,6 @@ public class Question {
     private String explanation;
     private String sourceName;
     private boolean deleteFlag;
+    private LocalDateTime updatedAt; // ← 追加
+    private String categoryName;
 }

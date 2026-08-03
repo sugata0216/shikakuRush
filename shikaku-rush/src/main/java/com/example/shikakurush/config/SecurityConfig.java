@@ -1,5 +1,6 @@
 package com.example.shikakurush.config;
 
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -54,8 +55,11 @@ public class SecurityConfig {
                                 "/admin/login",
                                 "/admin/top",
                                 "/admin/logout",
-                                "/admin/**"
+                                "/admin/**",
+                                "/user/report",
+                                "/user/report/complete"
                         ).permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

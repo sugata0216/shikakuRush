@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final NgWordService ngWordService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, NgWordService ngWordService) {
         this.userRepository = userRepository;
+        this.ngWordService = ngWordService;
     }
 
     // ユーザー名変更
@@ -26,6 +28,11 @@ public class UserService {
         // 月1回チェック
         if (user.isUsernameChangedThisMonth()) {
             throw AuthException.usernameAlreadyChanged();
+        }
+
+        // 禁止ワードチェック
+        if (ngWordService.containsNgWord(username)) {
+            throw AuthException.invalidUsername();
         }
 
         // 重複チェック
