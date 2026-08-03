@@ -22,6 +22,7 @@ public class AuthService {
     private final PasswordResetTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+    private final NgWordService ngWordService;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -32,11 +33,12 @@ public class AuthService {
     public AuthService(UserRepository userRepository,
                        PasswordResetTokenRepository tokenRepository,
                        PasswordEncoder passwordEncoder,
-                       JavaMailSender mailSender) {
+                       JavaMailSender mailSender, NgWordService ngWordService) {
         this.userRepository  = userRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSender      = mailSender;
+        this.ngWordService = ngWordService;
     }
 
     // ログイン
@@ -79,7 +81,7 @@ public class AuthService {
         mailSender.send(mail);
     }
 
-    // 登録完了
+    // AuthService.javaのregisterCompleteメソッドに追加
     @Transactional
     public User registerComplete(String token, String username, String password) {
         PasswordResetToken prt = tokenRepository.findByToken(token);
@@ -88,19 +90,16 @@ public class AuthService {
         if (prt.isUsed())    throw AuthException.tokenInvalid();
         if (prt.isExpired()) throw AuthException.tokenExpired();
 
-        // ユーザー名バリデーション
-        if (username == null || username.trim().isEmpty()) {
-            throw new AuthException("INVALID_USERNAME", "ユーザーネームを入力してください");
-        }
-        if (!username.matches("^[a-zA-Z0-9]{1,15}$")) {
-            throw new AuthException("INVALID_USERNAME", "ユーザーネームは英数字のみ・15文字以内で入力してください");
-        }
-
         if (userRepository.existsByEmail(prt.getEmail())) {
             throw AuthException.emailAlreadyExists();
         }
         if (userRepository.existsByUsername(username)) {
             throw AuthException.usernameAlreadyExists();
+        }
+
+        // 禁止ワードチェックを追加
+        if (ngWordService.containsNgWord(username)) {
+            throw AuthException.invalidUsername(); // 禁止ワードを含む場合
         }
 
         User user = new User();
@@ -110,8 +109,6 @@ public class AuthService {
         userRepository.save(user);
 
         tokenRepository.markAsUsed(token);
-
-        // 登録したユーザーを返す
         return userRepository.findByEmail(prt.getEmail());
     }
 

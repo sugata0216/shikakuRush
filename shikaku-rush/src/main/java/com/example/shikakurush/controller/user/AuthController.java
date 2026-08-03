@@ -3,6 +3,7 @@ package com.example.shikakurush.controller.user;
 import com.example.shikakurush.entity.User;
 import com.example.shikakurush.exception.AuthException;
 import com.example.shikakurush.service.user.AuthService;
+import com.example.shikakurush.service.user.NgWordService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -16,9 +17,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final NgWordService ngWordService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, NgWordService ngWordService) {
         this.authService = authService;
+        this.ngWordService = ngWordService;
     }
 
     // ログイン
@@ -146,6 +149,9 @@ public class AuthController {
             valid = false;
         } else if (!username.matches("^[a-zA-Z0-9]{1,15}$")) {
             model.addAttribute("usernameError", "英数字のみ・15文字以内で入力してください");
+            valid = false;
+        } else if (ngWordService.containsNgWord(username)) {
+            model.addAttribute("usernameError", "使用できない文字列が含まれています");
             valid = false;
         }
 

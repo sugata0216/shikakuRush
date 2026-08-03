@@ -37,4 +37,13 @@ public class ScoreHistoryService {
 
         return scoreMap;
     }
+
+    public void save(int userId, int categoryId, int difficultyId, int score) {
+        ScoreHistory scoreHistory = new ScoreHistory();
+        scoreHistory.setUserId(userId);
+        scoreHistory.setCategoryId(categoryId);
+        scoreHistory.setDifficultyId(difficultyId);
+        scoreHistory.setScore(score);
+        scoreHistoryRepository.save(scoreHistory);
+    }
 }

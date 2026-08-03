@@ -46,4 +46,9 @@ public class AuthException extends RuntimeException {
     public static AuthException forbidden() {
         return new AuthException("FORBIDDEN", "選択できない称号です");
     }
+
+    // AuthException.javaに追加
+    public static AuthException invalidUsername() {
+        return new AuthException("INVALID_USERNAME", "このユーザー名は使用できません");
+    }
 }

@@ -24,14 +24,17 @@ public class MyPageController {
     private final TitleService titleService;
     private final ScoreHistoryService scoreHistoryService;
     private final DifficultyService difficultyService;
+    private final NgWordService ngWordService;
+
     public MyPageController(UserService userService,
                             UserDeleteService userDeleteService,
-                            TitleService titleService, ScoreHistoryService scoreHistoryService, DifficultyService difficultyService) {
+                            TitleService titleService, ScoreHistoryService scoreHistoryService, DifficultyService difficultyService, NgWordService ngWordService) {
         this.userService = userService;
         this.userDeleteService = userDeleteService;
         this.titleService = titleService;
         this.scoreHistoryService = scoreHistoryService;
         this.difficultyService = difficultyService;
+        this.ngWordService = ngWordService;
     }
 
     // ページルーティング（スコア取得を追加）

@@ -8,7 +8,6 @@ import java.util.List;
 @Mapper
 public interface TitleMapper {
 
-    // 全称号一覧を取得
     @Select("""
             SELECT id, name, genre_id, difficulty_id, rank
             FROM titles
@@ -16,7 +15,6 @@ public interface TitleMapper {
             """)
     List<Title> findAll();
 
-    // ユーザーの所持称号IDリストを取得
     @Select("""
             SELECT title_id
             FROM user_titles
@@ -24,11 +22,24 @@ public interface TitleMapper {
             """)
     List<Integer> findOwnedTitleIdsByUserId(int userId);
 
-    // 現在選択中の称号IDを取得
     @Select("SELECT selected_title_id FROM users WHERE id = #{userId}")
     Integer findSelectedTitleIdByUserId(int userId);
 
-    // 選択中の称号を更新
     @Update("UPDATE users SET selected_title_id = #{titleId} WHERE id = #{userId}")
     void updateSelectedTitle(@Param("userId") int userId, @Param("titleId") int titleId);
+
+    // ── 称号新規作成（付与バッチ用） ──────────────────────
+    @Insert("""
+            INSERT INTO titles (name, genre_id, difficulty_id, rank, created_at)
+            VALUES (#{name}, #{genreId}, #{difficultyId}, #{rank}, CURRENT_TIMESTAMP)
+            """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void insert(Title title);
+
+    // ── ユーザーへの称号付与 ──────────────────────────────
+    @Insert("""
+            INSERT INTO user_titles (user_id, title_id, awarded_at)
+            VALUES (#{userId}, #{titleId}, CURRENT_TIMESTAMP)
+            """)
+    void insertUserTitle(@Param("userId") int userId, @Param("titleId") int titleId);
 }
