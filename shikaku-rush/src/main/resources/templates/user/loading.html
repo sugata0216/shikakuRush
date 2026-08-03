@@ -2,30 +2,31 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ローディング</title>
+    <link rel="stylesheet" th:href="@{/css/user/loading.css}">
 </head>
 <body>
-    <div>
-        <p>【遊び方説明】</p>
-        <p>デジタルデータトンネルを進み、現れるコンピューターウイルスを倒してウイルスからの感染を防ごう！</p>
-        <img src="">
-        <p>4つの選択肢の中から正解を選んでウイルスを撃退しよう！</p>
-        <p>画面下部にあるボタンをうまく使用してバトルを円滑に進めよう！</p>
-        <ul>
-            <li>
-                <p>Change</p>
-                <p>→現在の問題をスキップできる</p>
+    <div class="explain-card">
+        <p class="explain-title">【遊び方説明】</p>
+        <p class="explain-text">デジタルデータトンネルを進み、現れるコンピューターウイルスを倒してウイルスからの感染を防ごう！</p>
+        <div class="explain-img"></div>
+        <p class="explain-text">4つの選択肢の中から正解を選んでウイルスを撃退しよう！</p>
+        <p class="explain-text">画面下部にあるボタンをうまく使用してバトルを円滑に進めよう！</p>
+        <ul class="explain-list">
+            <li class="explain-item item-change">
+                <p class="item-label">Change</p>
+                <p class="item-desc">→現在の問題をスキップできる</p>
             </li>
-            <li>
-                <p>GiveUp</p>
-                <p>→ゲームを中断できる</p>
+            <li class="explain-item item-giveup">
+                <p class="item-label">GiveUp</p>
+                <p class="item-desc">→ゲームを中断できる</p>
             </li>
         </ul>
     </div>
 
-    <!-- ✅ タップしたらゲーム画面へ遷移 -->
-    <a th:href="@{/user/game}">
-        <p>Tap to Start</p>
+    <a class="start-link" th:href="@{/user/game}">
+        <p class="start-text">Tap to Start</p>
     </a>
 </body>
 </html>

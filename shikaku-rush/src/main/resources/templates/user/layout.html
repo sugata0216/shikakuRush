@@ -5,29 +5,29 @@
     <title>レイアウト</title>
 </head>
 <body>
-<!-- ✅ th:fragment でフラグメントとして定義 -->
-<div th:fragment="menubar">
+<div th:fragment="menubar" class="user-menu-bar">
+    <link rel="stylesheet" th:href="@{/css/user/layout.css}" />
     <div>
         <a th:href="@{/user/top}">
-            <img src="">
+            <img th:src="@{/img/home.png}" alt="TOP">
             <p>TOP</p>
         </a>
     </div>
     <div>
         <a th:href="@{/user/my-page}">
-            <img src="">
+            <img th:src="@{/img/mypage.png}" alt="マイページ">
             <p>マイページ</p>
         </a>
     </div>
     <div>
         <a th:href="@{/user/help}">
-            <img src="">
+            <img th:src="@{/img/book.png}" alt="ヘルプ">
             <p>ヘルプ</p>
         </a>
     </div>
     <div>
         <a th:href="@{/user/notification}">
-            <img src="">
+            <img th:src="@{/img/mail.png}" alt="お知らせ">
             <p>お知らせ</p>
         </a>
     </div>

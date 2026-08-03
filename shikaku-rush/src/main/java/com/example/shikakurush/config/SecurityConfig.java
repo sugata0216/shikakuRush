@@ -60,8 +60,11 @@ public class SecurityConfig {
                                 "/admin/top",
                                 "/admin/logout",
                                 "/admin/**",
+                                "/css/**",
+                                "/img/**",
                                 "/user/report",
                                 "/user/report/complete"
+
                         ).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()

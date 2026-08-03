@@ -1,25 +1,25 @@
-<!-- difficulty.html -->
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>難易度選択</title>
+    <link rel="stylesheet" th:href="@{/css/user/difficulty-selection.css}" />
 </head>
 <body>
-    <h1>Level Select</h1>
-
-    <!-- Thymeleafで難易度一覧を表示 -->
-    <div th:each="difficulty : ${difficulties}">
-        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficulty.id})}">
-            <p th:text="${difficulty.name}"></p>
-        </a>
-    </div>
-
-    <!-- 戻るボタン -->
-    <div>
-        <a th:href="@{/user/category(genreId=${genreId})}">⇦</a>
-    </div>
-    <!-- th:replace でフラグメントを埋め込む -->
+    <main class="main-container">
+        <h1 class="page-title">Level Select</h1>
+        <div class="difficulty-list">
+            <div class="difficulty-item" th:each="difficulty : ${difficulties}">
+                <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficulty.id})}">
+                    <p class="difficulty-name" th:text="${difficulty.name}"></p>
+                </a>
+            </div>
+        </div>
+        <div class="back-btn">
+                <a href="/user/genre">戻る↵</a>
+        </div>
+    </main>
     <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>

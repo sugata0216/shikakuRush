@@ -2,14 +2,14 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOP</title>
+    <link rel="stylesheet" th:href="@{/css/user/top.css}" />
 </head>
 <body>
     <h2>Shikaku Rush!!!!</h2>
     <a th:href="@{/user/genre}">ジャンル選択</a>
     <a th:href="@{/user/ranking}">ランキング</a>
-
-    <!-- ✅ メニューバーを埋め込む -->
     <div th:replace="~{user/layout :: menubar}"></div>
 </body>
 </html>
