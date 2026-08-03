@@ -1,9 +1,7 @@
 package com.example.shikakurush.mapper.user;
 
 import com.example.shikakurush.entity.ScoreHistory;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -24,4 +22,9 @@ public interface ScoreHistoryMapper {
             @Param("userId") int userId,
             @Param("categoryId") int categoryId,
             @Param("difficultyId") int difficultyId);
+
+    @Insert("INSERT INTO score_histories (user_id, category_id, difficulty_id, score, played_at) " +
+            "VALUES (#{userId}, #{categoryId}, #{difficultyId}, #{score}, NOW())")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void insert(ScoreHistory scoreHistory);
 }

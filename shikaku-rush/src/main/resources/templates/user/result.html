@@ -1,115 +1,118 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>リザルト</title>
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .overlay.active { display: block; }
+        .popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            z-index: 200;
+        }
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .popup-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .card { display: none; }
+        .card.active { display: block; }
+    </style>
 </head>
-
 <body>
+
+<!-- ✅ ゲームクリア時 -->
+<div th:if="${!gameOver}">
     <div>
         <h1>Game</h1>
         <h1>Clear!!</h1>
     </div>
 
+    <!-- ✅ カルーセル -->
     <div>
+        <button type="button" onclick="prevCard()">◀</button>
+        <button type="button" onclick="nextCard()">▶</button>
+    </div>
+
+    <!-- ✅ カード1：問題一覧 -->
+    <div id="card-0" class="card active">
         <h1>Game Clear!!</h1>
         <p>Score</p>
-        <p>5000000</p>
-        <div>
-            <div>まるが入る予定です</div>
-            <div>1</div>
-            <div>排他的論理和</div>
+        <p th:text="${score}"></p>
+
+        <div th:each="question, iterStat : ${questions}" th:if="${iterStat.index < 10}">
             <div>
-                <button>詳細</button>
+                <div th:if="${correctList != null}">
+                    <span th:if="${correctList[iterStat.index]}">〇</span>
+                    <span th:unless="${correctList[iterStat.index]}">×</span>
+                </div>
+                <div th:text="${iterStat.index + 1}"></div>
+                <div th:text="${question.questionText}"></div>
+                <div>
+                    <button type="button"
+                            class="detail-btn"
+                            th:data-id="${question.id}"
+                            th:data-question="${question.questionText}"
+                            th:data-answer="${question.correctAnswer}"
+                            th:data-choice1="${question.choice1}"
+                            th:data-choice2="${question.choice2}"
+                            th:data-choice3="${question.choice3}"
+                            th:data-choice4="${question.choice4}"
+                            th:data-explanation="${question.explanation}"
+                            th:data-source="${question.sourceName}"
+                            th:data-category="${question.categoryName}">
+                        詳細
+                    </button>
+                </div>
             </div>
         </div>
-        <div>
-            <div>まるが入る予定です</div>
-            <div>2</div>
-            <div>300</div>
-            <div>
-                <button>詳細</button>
-            </div>
-        </div>
-        <div>
-            <div>バツが入る予定です</div>
-            <div>3</div>
-            <div>ITポートフォリオ</div>
-            <div>
-                <button>詳細</button>
-            </div>
-        </div>
-        <div>
-            <div>マルが入る予定です</div>
-            <div>4</div>
-            <div>AVR</div>
-            <div>
-                <button>詳細</button>
-            </div>
-        </div>
-        <div>
-            <div>マルが入る予定です</div>
-            <div>5</div>
-            <div>140</div>
-            <div>
-                <button>詳細</button>
-            </div>
-        </div>
-        <div>
-            <div>バツが入る予定です</div>
-            <div>6</div>
-            <div>データウェアハウス</div>
-            <div>
-                <button>詳細</button>
-            </div>
-        </div>
-        <a href="genre-selection.html">ジャンル選択に戻る</a>
-        <a href="loading.html">リトライ</a>
+
+        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
+        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
     </div>
 
-    <div>
+    <!-- ✅ カード2：ランキング（ALLカテゴリ時のみ表示） -->
+    <div id="card-1" class="card" th:if="${rankings != null}">
         <h1>Game Clear!!</h1>
-        <p>RANKING</p>
-        <div>
-            <div>1</div>
-            <div>kazatoGX</div>
-            <div>12800pt</div>
+        <h1>RANKING</h1>
+        <div th:if="${#lists.isEmpty(rankings)}">
+            <p>まだランキングデータがありません</p>
         </div>
-        <div>
-            <div>2</div>
-            <div>tamayamatayamay</div>
-            <div>10300pt</div>
+        <div th:each="ranking, iterStat : ${rankings}">
+            <div th:text="${iterStat.index + 1}"></div>
+            <div th:text="${ranking.username}"></div>
+            <div>
+                <span th:text="${ranking.score}"></span>pt
+            </div>
         </div>
-        <div>
-            <div>3</div>
-            <div>ILOVESONODAUMI</div>
-            <div>9300pt</div>
-        </div>
-        <div>
-            <div>4</div>
-            <div>sarudatekazato</div>
-            <div>7400pt</div>
-        </div>
-        <div>
-            <div>5</div>
-            <div>mutekiryunosuke</div>
-            <div>5400pt</div>
-        </div>
-        <div>
-            <div>6</div>
-            <div>neko2525</div>
-            <div>5100pt</div>
-        </div>
-        <div>
-            <div>7</div>
-            <div>SEIKIN</div>
-            <div>2300pt</div>
-        </div>
-        <a href="genre-selection.html">ジャンル選択に戻る</a>
-        <a href="loading.html">リトライ</a>
-    </div>
 
+        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
+        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+    </div>
+</div>
+
+<!-- ✅ ゲームオーバー時 -->
+<div th:if="${gameOver}">
     <div>
         <h1>Game</h1>
         <h1>Over...</h1>
@@ -117,9 +120,129 @@
 
     <div>
         <h1>Game Over...</h1>
-        <a href="genre-selection.html">ジャンル選択に戻る</a>
-        <a href="loading.html">リトライ</a>
-    </div>
-</body>
+        <p>Score</p>
+        <p th:text="${score}"></p>
 
+        <div th:each="question, iterStat : ${questions}" th:if="${iterStat.index < answeredCount}">
+            <div>
+                <div th:if="${correctList != null and iterStat.index < #lists.size(correctList)}">
+                    <span th:if="${correctList[iterStat.index]}">〇</span>
+                    <span th:unless="${correctList[iterStat.index]}">×</span>
+                </div>
+                <div th:text="${iterStat.index + 1}"></div>
+                <div th:text="${question.questionText}"></div>
+                <div>
+                    <button type="button"
+                            class="detail-btn"
+                            th:data-id="${question.id}"
+                            th:data-question="${question.questionText}"
+                            th:data-answer="${question.correctAnswer}"
+                            th:data-choice1="${question.choice1}"
+                            th:data-choice2="${question.choice2}"
+                            th:data-choice3="${question.choice3}"
+                            th:data-choice4="${question.choice4}"
+                            th:data-explanation="${question.explanation}"
+                            th:data-source="${question.sourceName}"
+                            th:data-category="${question.categoryName}">
+                        詳細
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
+        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+    </div>
+</div>
+
+<!-- ✅ 詳細ポップアップ -->
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup" style="display: none;">
+    <div class="popup-header">
+        <span id="popupCategory"></span>
+        <button type="button" onclick="closePopup()">✕</button>
+    </div>
+    <p id="popupQuestion"></p>
+    <p><strong>正解：</strong><span id="popupAnswer"></span></p>
+    <p><strong>解説：</strong><span id="popupExplanation"></span></p>
+    <div class="popup-footer">
+        <button type="button" id="reportBtn">問題を報告する</button>
+        <span id="popupSource"></span>
+    </div>
+</div>
+
+<div th:replace="~{user/layout :: menubar}"></div>
+
+<script>
+    // ── カルーセル ────────────────────────────────────────
+    let currentCard = 0;
+    const cards = document.querySelectorAll('.card');
+    const totalCards = cards.length;
+
+    function showCard(index) {
+        cards.forEach(card => card.classList.remove('active'));
+        if (cards[index]) cards[index].classList.add('active');
+    }
+
+    function prevCard() {
+        currentCard = (currentCard - 1 + totalCards) % totalCards;
+        showCard(currentCard);
+    }
+
+    function nextCard() {
+        currentCard = (currentCard + 1) % totalCards;
+        showCard(currentCard);
+    }
+
+    // ── 詳細ポップアップ ──────────────────────────────────
+    document.querySelectorAll('.detail-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+
+            // 正解番号から正解テキストに変換
+            const choices = [
+                btn.dataset.choice1,
+                btn.dataset.choice2,
+                btn.dataset.choice3,
+                btn.dataset.choice4
+            ];
+            const correctIndex = parseInt(btn.dataset.answer) - 1;
+            const correctText = choices[correctIndex] || btn.dataset.answer;
+
+            document.getElementById('popupCategory').textContent    = this.dataset.category || '';
+            document.getElementById('popupQuestion').textContent    = this.dataset.question;
+            document.getElementById('popupAnswer').textContent      = correctText; // テキストに変更
+            document.getElementById('popupExplanation').textContent = this.dataset.explanation || '解説なし';
+            document.getElementById('popupSource').textContent      = this.dataset.source || '';
+
+            document.getElementById('reportBtn').onclick = function() {
+                const id = btn.dataset.id;
+                const question = btn.dataset.question;
+                const choice1 = btn.dataset.choice1;
+                const choice2 = btn.dataset.choice2;
+                const choice3 = btn.dataset.choice3;
+                const choice4 = btn.dataset.choice4;
+                const answer = btn.dataset.answer;
+
+                const url = '/user/report'
+                    + '?questionId=' + id
+                    + '&questionText=' + encodeURIComponent(question)
+                    + '&choice1=' + encodeURIComponent(choice1)
+                    + '&choice2=' + encodeURIComponent(choice2)
+                    + '&choice3=' + encodeURIComponent(choice3)
+                    + '&choice4=' + encodeURIComponent(choice4)
+                    + '&correctAnswer=' + encodeURIComponent(answer);
+                window.open(url, '_blank');
+            };
+
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('popup').style.display = 'block';
+        });
+    });
+
+    function closePopup() {
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('popup').style.display = 'none';
+    }
+</script>
+</body>
 </html>

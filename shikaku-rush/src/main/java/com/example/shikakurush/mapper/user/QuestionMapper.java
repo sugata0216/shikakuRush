@@ -12,7 +12,7 @@ public interface QuestionMapper {
     @Select("""
             SELECT id, category_id, question_text,
                    choice_1, choice_2, choice_3, choice_4,
-                   correct_answer, explanation, source_name
+                   correct_answer, explanation, source_name, updated_at
             FROM questions
             WHERE category_id = #{categoryId}
             AND delete_flag = FALSE
@@ -25,7 +25,7 @@ public interface QuestionMapper {
     @Select("""
             SELECT q.id, q.category_id, q.question_text,
                    q.choice_1, q.choice_2, q.choice_3, q.choice_4,
-                   q.correct_answer, q.explanation, q.source_name
+                   q.correct_answer, q.explanation, q.source_name, updated_at
             FROM questions q
             INNER JOIN categories c ON c.id = q.category_id
             WHERE c.genre_id = #{genreId}

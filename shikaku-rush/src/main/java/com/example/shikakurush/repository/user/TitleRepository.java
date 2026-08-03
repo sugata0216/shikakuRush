@@ -34,4 +34,12 @@ public class TitleRepository {
     public void updateSelectedTitle(int userId, int titleId) {
         titleMapper.updateSelectedTitle(userId, titleId);
     }
+
+    public void insert(Title title) {
+        titleMapper.insert(title);
+    }
+
+    public void insertUserTitle(int userId, int titleId) {
+        titleMapper.insertUserTitle(userId, titleId);
+    }
 }

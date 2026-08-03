@@ -33,7 +33,7 @@ public class RankingController {
             return "redirect:/user/login";
         }
 
-        List<Ranking> rankings = rankingService.findTop10(genreId, difficultyId);
+        List<Ranking> rankings = rankingService.findTop5(genreId, difficultyId);
 
         model.addAttribute("rankings", rankings);
         model.addAttribute("selectedGenreId", genreId);

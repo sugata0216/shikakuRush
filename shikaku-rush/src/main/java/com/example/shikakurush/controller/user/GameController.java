@@ -3,6 +3,8 @@ package com.example.shikakurush.controller.user;
 import com.example.shikakurush.entity.Question;
 import com.example.shikakurush.service.user.CategoryService;
 import com.example.shikakurush.service.user.GameService;
+import com.example.shikakurush.service.user.RankingService;
+import com.example.shikakurush.service.user.ScoreHistoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +19,14 @@ public class GameController {
 
     private final GameService gameService;
     private final CategoryService categoryService;
+    private final ScoreHistoryService scoreHistoryService;
+    private final RankingService rankingService;
 
-    public GameController(GameService gameService, CategoryService categoryService) {
+    public GameController(GameService gameService, CategoryService categoryService, ScoreHistoryService scoreHistoryService, RankingService rankingService) {
         this.gameService = gameService;
         this.categoryService = categoryService;
+        this.scoreHistoryService = scoreHistoryService;
+        this.rankingService = rankingService;
     }
 
     // ローディング画面
@@ -35,12 +41,14 @@ public class GameController {
         }
 
         List<Question> questions = gameService.prepareQuestions(categoryId, genreId);
+        int lives = (difficultyId == 2) ? 1 : Integer.MAX_VALUE; // ノーマルは無限、ハードは1
         session.setAttribute("questions", questions);
         session.setAttribute("currentIndex", 0);
         session.setAttribute("changeUsed", false);
         session.setAttribute("difficultyId", difficultyId);
         session.setAttribute("genreId", genreId);
         session.setAttribute("categoryId", categoryId);
+        session.setAttribute("lives", lives);
 
         // ジャンルIDによって制限時間を設定
         int timeLimit = switch (genreId) {
@@ -124,9 +132,6 @@ public class GameController {
                          @RequestParam(defaultValue = "false") boolean timedOut,
                          @RequestParam(defaultValue = "60") int timeLeft,
                          HttpSession session) {
-        if (session.getAttribute("userId") == null) {
-            return "redirect:/user/login";
-        }
 
         List<Question> questions = (List<Question>) session.getAttribute("questions");
         Integer currentIndex     = getSessionAttr(session, "currentIndex", 0);
@@ -134,6 +139,7 @@ public class GameController {
         Integer combo            = getSessionAttr(session, "combo", 0);
         Integer correctCount     = getSessionAttr(session, "correctCount", 0);
         Integer difficultyId     = getSessionAttr(session, "difficultyId", 1);
+        Integer lives            = getSessionAttr(session, "lives", Integer.MAX_VALUE);
 
         if (questions == null) {
             return "redirect:/user/genre";
@@ -153,15 +159,31 @@ public class GameController {
             score += baseScore + timeBonus + comboBonus;
         } else {
             combo = 0;
+            if (lives != Integer.MAX_VALUE) {
+                lives--;
+            }
         }
+
+        List<Boolean> correctList = (List<Boolean>) session.getAttribute("correctList");
+        if (correctList == null) {
+            correctList = new java.util.ArrayList<>();
+        }
+        correctList.add(isCorrect);
+        session.setAttribute("correctList", correctList);
 
         session.setAttribute("score", score);
         session.setAttribute("combo", combo);
         session.setAttribute("correctCount", correctCount);
         session.setAttribute("changeUsed", false);
         session.setAttribute("currentIndex", currentIndex + 1);
+        session.setAttribute("lives", lives);
 
-        // 10問終了でリザルトへ
+        // ハードモードで残機が尽きたらゲームオーバーとして結果画面へ
+        if (lives <= 0) {
+            session.setAttribute("gameOver", true);
+            return "redirect:/user/result";
+        }
+
         if (currentIndex + 1 >= 10) {
             return "redirect:/user/result";
         }
@@ -186,6 +208,7 @@ public class GameController {
 
         return "redirect:/user/genre";
     }
+
     private <T> T getSessionAttr(HttpSession session, String key, T defaultValue) {
         Object val = session.getAttribute(key);
         return val != null ? (T) val : defaultValue;

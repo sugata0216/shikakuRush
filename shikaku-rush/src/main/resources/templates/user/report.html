@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>問題報告</title>
+</head>
+<body>
+<div>
+    <h1>問題報告</h1>
+
+    <p>以下の問題について報告します。</p>
+    <p th:text="${questionText}"></p>
+
+    <!-- 選択肢一覧 -->
+    <div>
+        <p>選択肢</p>
+        <div th:each="i : ${#numbers.sequence(1, 4)}">
+            <span th:with="choice=${i == 1 ? choice1 : i == 2 ? choice2 : i == 3 ? choice3 : choice4}">
+                <!-- 正解の選択肢に印をつける -->
+                <span th:if="${correctAnswer == i.toString()}">✓</span>
+                <span th:text="${choice}"></span>
+            </span>
+        </div>
+    </div>
+
+    <form th:action="@{/user/report}" method="post">
+        <input type="hidden" name="questionId" th:value="${questionId}">
+        <label>報告内容</label>
+        <textarea name="detail" rows="5"
+                  placeholder="問題の不備や誤りについて詳しく記入してください"
+                  required></textarea>
+        <button type="submit">報告する</button>
+    </form>
+
+    <button onclick="window.close()">閉じる</button>
+</div>
+</body>
+</html>
