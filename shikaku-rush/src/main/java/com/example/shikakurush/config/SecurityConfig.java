@@ -22,6 +22,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/css/**",
+                                "/js/**",
+                                "/img/**",
+                                "/images/**",
                                 "/user/start/go",
                                 "/user/login",
                                 "/user/logout",
@@ -57,6 +61,7 @@ public class SecurityConfig {
                                 "/admin/**"
                         ).permitAll()
                         .anyRequest().authenticated()
+                        
                 )
                 .formLogin(form -> form
                         .loginPage("/user/login")

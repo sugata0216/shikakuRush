@@ -1,0 +1,211 @@
+:root {
+  --bg-deep: #050b18;
+  --panel-border: #35e6ff;
+  --text-cyan: #7be8ff;
+  --text-white: #f2fbff;
+  --btn-blue: #6fa8dc;
+  --error-yellow: #ffe066;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-white);
+
+  /* ✅ iOS Safariはアドレスバーの出し引きでvhが変動するため、動的ビューポート単位を優先しつつフォールバックを用意 */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+
+  /* ✅ ノッチ/ホームインジケーターに被らないよう safe-area 分の余白を確保（要 viewport-fit=cover） */
+  padding: max(24px, env(safe-area-inset-top))
+           max(24px, env(safe-area-inset-right))
+           max(24px, env(safe-area-inset-bottom))
+           max(24px, env(safe-area-inset-left));
+
+  /* ✅ 背景を画像に変更。パスは実際に配置した画像に合わせて変更してください */
+  background-image: url('../../img/background-img.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* iOSでは background-attachment: fixed が正しく動かないため使用しない */
+
+  /* iOSでのバウンドスクロール時に背景色が見えても違和感がないように */
+  background-color: var(--bg-deep);
+
+  /* ダブルタップでのズームやテキスト選択のちらつきを防止 */
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+/* 画像の上に薄く暗いオーバーレイをかけて、文字とパネルを見やすくする */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(3, 9, 20, 0.55) 0%,
+    rgba(3, 9, 20, 0.35) 50%,
+    rgba(3, 9, 20, 0.6) 100%
+  );
+}
+
+/* ログインパネル（bodyの直下の div） */
+body > div {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  padding: 48px 32px 40px;
+  background: rgba(4, 12, 26, 0.55);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 4px;
+  box-shadow:
+    0 0 12px rgba(53, 230, 255, 0.55),
+    0 0 40px rgba(53, 230, 255, 0.15),
+    inset 0 0 20px rgba(53, 230, 255, 0.06);
+  /* iOS Safari(WebKit)向けに接頭辞つきも指定 */
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-white);
+  margin: 0 0 36px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+}
+
+/* サーバーから渡されるエラーメッセージ */
+p {
+  color: var(--error-yellow);
+  font-size: 12px;
+  text-align: center;
+  margin: -8px 0 18px;
+  letter-spacing: 0.02em;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--text-white);
+  margin: 0 0 10px;
+}
+
+input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(123, 232, 255, 0.55);
+  color: var(--text-white);
+  /* ✅ iOSは16px未満のinputにフォーカスすると画面が自動拡大されるため16px以上に */
+  font-size: 16px;
+  padding: 8px 2px 10px;
+  outline: none;
+  margin-bottom: 26px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  /* iOS標準の角丸/内側影/オートキャピタライズの見た目をリセット */
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+input::placeholder {
+  color: rgba(242, 251, 255, 0.3);
+}
+
+input:focus {
+  border-color: var(--panel-border);
+  box-shadow: 0 1px 6px rgba(53, 230, 255, 0.5);
+}
+
+a {
+  color: var(--text-cyan);
+  font-size: 12px;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-shadow: 0 0 8px rgba(123, 232, 255, 0.6);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+
+  /* ✅ タップ時の指のサイズを考慮して当たり判定を広げる（見た目のサイズは変えない） */
+  display: inline-block;
+  padding: 10px 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(123, 232, 255, 0.9);
+}
+
+/* パスワード欄の直後にあるリンク（パスワードを忘れた方はこちら） */
+input + a {
+  margin-bottom: 6px;
+}
+
+button[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+  background: linear-gradient(180deg, #8fc0e8 0%, var(--btn-blue) 100%);
+  color: #0a1a2e;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 12px 48px;
+  /* ✅ Appleの推奨タップ領域(44pt)を確保 */
+  min-height: 44px;
+  border-radius: 22px;
+  margin: 26px 0;
+  box-shadow:
+    0 0 14px rgba(111, 168, 220, 0.7),
+    0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 20px rgba(111, 168, 220, 0.9),
+    0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* ボタンの直後にあるリンク（新規登録はこちら） */
+button + a {
+  margin-bottom: 0;
+}
