@@ -9,6 +9,9 @@
 </head>
 <body>
 
+<!-- 演出用の全画面オーバーレイ -->
+<div id="screenOverlay" class="screen-overlay"></div>
+
 <div class="game-container">
     <!-- ヘッダーセクション -->
     <div class="header">
@@ -26,10 +29,8 @@
         </div>
     </div>
 
-    <!-- 敵画像セクション -->
     <div class="enemy-container">
-        <!-- ★ここに敵画像のパスを入力してください★ -->
-        <img th:src="@{/img/enemy.png}" src="../../static/img/enemy.png" alt="敵キャラクター" class="enemy-image">
+        <img th:src="@{/img/enemy.png}" src="../../static/img/enemy.png" alt="敵キャラクター" class="enemy-image anim-spawn" id="enemyImage">
     </div>
 
     <!-- 問題テキストセクション -->
@@ -43,20 +44,26 @@
         <input type="hidden" name="answer" id="answerInput" value="">
         <input type="hidden" name="timeLeft" id="timeLeftInput" value="60">
         
+        <!-- 難易度ID・正解情報・制限時間・現在問題番号をJSに引き渡す hidden 要素 -->
+        <input type="hidden" id="difficultyIdInput" th:value="${session.difficultyId}">
+        <input type="hidden" id="correctAnswerInput" th:value="${question.correctAnswer}">
+        <input type="hidden" id="timeLimitInput" th:value="${session.timeLimit}">
+        <input type="hidden" id="currentIndexInput" th:value="${currentIndex}">
+        
         <div class="choices-grid">
-            <div class="answer-choice choice-a" th:onclick="|submitAnswer('1')|" style="cursor: pointer;">
+            <div class="answer-choice choice-a" onclick="submitAnswer('1')" style="cursor: pointer;">
                 <div class="choice-label">A</div>
                 <p class="choice-text" th:text="${question.choice1}">EVA</p>
             </div>
-            <div class="answer-choice choice-b" th:onclick="|submitAnswer('2')|" style="cursor: pointer;">
+            <div class="answer-choice choice-b" onclick="submitAnswer('2')" style="cursor: pointer;">
                 <div class="choice-label">B</div>
                 <p class="choice-text" th:text="${question.choice2}">IRR</p>
             </div>
-            <div class="answer-choice choice-c" th:onclick="|submitAnswer('3')|" style="cursor: pointer;">
+            <div class="answer-choice choice-c" onclick="submitAnswer('3')" style="cursor: pointer;">
                 <div class="choice-label">C</div>
                 <p class="choice-text" th:text="${question.choice3}">NPV</p>
             </div>
-            <div class="answer-choice choice-d" th:onclick="|submitAnswer('4')|" style="cursor: pointer;">
+            <div class="answer-choice choice-d" onclick="submitAnswer('4')" style="cursor: pointer;">
                 <div class="choice-label">D</div>
                 <p class="choice-text" th:text="${question.choice4}">ROI</p>
             </div>
@@ -70,15 +77,12 @@
                 class="change-button"
                 th:disabled="${changeUsed}"
                 onclick="window.location.href='/user/game/change'">
-            <!-- ★ここにChange画像のパスを入力してください★ -->
             <img th:src="@{/img/change-button.png}" src="ここにChange画像のパス" alt="" class="button-icon">
             <span>change</span>
         </button>
 
-        <!-- ✅ 送信フォームはそのまま残し、ボタンは type="button" にしてポップアップを開くだけにする -->
         <form th:action="@{/user/game/giveup}" method="post" class="giveup-form" id="giveupForm">
             <button type="button" class="giveup-button" onclick="openModal('giveupModal')">
-                <!-- ★ここにGiveUp画像のパスを入力してください★ -->
                 <img th:src="@{/img/giveup-button.png}" src="ここにGiveUp画像のパス" alt="" class="button-icon">
                 <span>give up</span>
             </button>
@@ -86,7 +90,7 @@
     </div>
 </div>
 
-<!-- ✅ Give Up確認モーダル -->
+<!-- Give Up確認モーダル -->
 <div id="giveupModal" style="display: none;">
     <div>
         <button onclick="closeModal('giveupModal')">✕</button>
@@ -99,31 +103,140 @@
     </div>
 </div>
 
-<script>
-    let timeLeft = 30;
+<!-- Thymeleafのパス解決を行うため th:inline="javascript" を付与 -->
+<script th:inline="javascript">
+    // ==========================================
+    // 1. 敵画像の切り替え処理
+    // ==========================================
+    // 用意した画像ファイルのパスリスト（ファイル名に合わせて自由に増減してください）
+    const enemyImages = [
+        /*[[@{/img/enemy.png}]]*/ '../../static/img/enemy.png',
+        /*[[@{/img/enemy2.png}]]*/ '../../static/img/enemy2.png',
+        /*[[@{/img/enemy3.png}]]*/ '../../static/img/enemy3.png',
+        /*[[@{/img/enemy4.png}]]*/ '../../static/img/enemy4.png'
+    ];
+
+    const enemyEl = document.getElementById('enemyImage');
+    
+    // 【完全ランダムにする場合】
+    const randomIndex = Math.floor(Math.random() * enemyImages.length);
+    
+    // 【問題番号に連動させる場合（コメントアウトを切り替えて選べます）】
+    // const currentIndex = parseInt(document.getElementById('currentIndexInput').value || '0', 10);
+    // const randomIndex = currentIndex % enemyImages.length;
+
+    // 画面ロード時に敵画像をセット
+    if (enemyEl && enemyImages.length > 0) {
+        enemyEl.src = enemyImages[randomIndex];
+    }
+
+
+    // ==========================================
+    // 2. タイマー・ゲームロジック
+    // ==========================================
+    const initialTimeLimit = parseInt(document.getElementById('timeLimitInput').value || '30', 10);
+    let timeLeft = initialTimeLimit; 
+    let isSubmitting = false; // 連打防止フラグ
+
     const timerEl = document.getElementById('timer');
     const timeLeftInput = document.getElementById('timeLeftInput');
     const timedOutInput = document.getElementById('timedOutInput');
     const answerInput = document.getElementById('answerInput');
     const formEl = document.querySelector('.answer-form');
+    const overlayEl = document.getElementById('screenOverlay');
+
+    // 難易度と正解の取得 (ハードは difficultyId == 2)
+    const difficultyId = parseInt(document.getElementById('difficultyIdInput').value || '1', 10);
+    const correctAnswer = document.getElementById('correctAnswerInput').value;
+
+    // 初期表示のタイマーフォーマット
+    timerEl.textContent = formatTime(timeLeft);
 
     const timer = setInterval(() => {
         timeLeft--;
         timerEl.textContent = formatTime(timeLeft);
         timeLeftInput.value = timeLeft;
 
+        // 【共通】残り時間5秒前でタイマーと画面が赤く点滅
+        if (timeLeft <= 5 && !timerEl.classList.contains('timer-warning')) {
+            timerEl.classList.add('timer-warning');
+            overlayEl.classList.add('screen-warning');
+        }
+
         if (timeLeft <= 0) {
             clearInterval(timer);
             timedOutInput.value = 'true';
             answerInput.value = '';
-            formEl.submit();
+            handleTimeOut();
         }
     }, 1000);
 
+    // 時間切れ時のアニメーション処理
+    function handleTimeOut() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        // 出現アニメーションと危険警告を解除してアニメーションの衝突を防ぐ
+        enemyEl.classList.remove('anim-spawn');
+        overlayEl.classList.remove('screen-warning');
+
+        if (difficultyId === 2) {
+            // 【ハード・時間切れ】敵攻撃 → 画面が暗くなり送信
+            enemyEl.classList.add('anim-attack');
+            setTimeout(() => {
+                overlayEl.classList.add('active-dark');
+            }, 300);
+            setTimeout(() => {
+                formEl.submit();
+            }, 1000);
+        } else {
+            // 【ノーマル・時間切れ】敵攻撃 → 画面赤くフラッシュ → 敵やられて消えて送信
+            enemyEl.classList.add('anim-attack');
+            setTimeout(() => {
+                overlayEl.classList.add('active-red');
+            }, 200);
+            setTimeout(() => {
+                overlayEl.classList.remove('active-red');
+                enemyEl.classList.remove('anim-attack');
+                enemyEl.classList.add('anim-defeated');
+            }, 600);
+            setTimeout(() => {
+                formEl.submit();
+            }, 1200);
+        }
+    }
+
+    // 解答ボタン押下時のアニメーション処理
     function submitAnswer(answer) {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
         clearInterval(timer);
         answerInput.value = answer;
-        formEl.submit();
+
+        // 出現アニメーションと危険警告を解除してアニメーションの衝突を防ぐ
+        enemyEl.classList.remove('anim-spawn');
+        overlayEl.classList.remove('screen-warning');
+
+        const isCorrect = (String(answer) === String(correctAnswer));
+
+        if (difficultyId === 2 && !isCorrect) {
+            // 【ハード・不正解】敵攻撃 → 画面が暗くなり送信
+            enemyEl.classList.add('anim-attack');
+            setTimeout(() => {
+                overlayEl.classList.add('active-dark');
+            }, 300);
+            setTimeout(() => {
+                formEl.submit();
+            }, 1000);
+        } else {
+            // 【ノーマル（正解・不正解）】および【ハード（正解）】
+            // 敵がやられて消えて送信
+            enemyEl.classList.add('anim-defeated');
+            setTimeout(() => {
+                formEl.submit();
+            }, 700);
+        }
     }
 
     function formatTime(seconds) {
@@ -132,7 +245,7 @@
         return `${mins} : ${secs}`;
     }
 
-    /* ✅ モーダル開閉(helpページと同じ仕組み) */
+    /* モーダル開閉 */
     function openModal(id) {
         document.getElementById(id).style.display = 'block';
     }
