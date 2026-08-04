@@ -1,0 +1,238 @@
+:root {
+  --bg-deep: #050b18;
+  --panel-border: #35e6ff;
+  --text-cyan: #7be8ff;
+  --text-white: #f2fbff;
+  --text-dim: rgba(242, 251, 255, 0.65);
+  --gold: #ffd23f;
+  --silver: #cfd8e3;
+  --bronze: #ffa94d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-white);
+
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+
+  padding: max(28px, env(safe-area-inset-top)) 20px
+           calc(96px + env(safe-area-inset-bottom))
+           20px;
+
+  background-image: url('../../img/background-img.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-deep);
+
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(3, 9, 20, 0.62) 0%,
+    rgba(3, 9, 20, 0.45) 45%,
+    rgba(3, 9, 20, 0.66) 100%
+  );
+}
+
+/* ページタイトル（"ランキング"というテキストのdiv） */
+/* ✅ HTMLの文言(ランキング)はそのまま残しつつ、見た目だけ画像の "RANKING" 表記に差し替え */
+body > div:first-of-type {
+  position: relative;
+  z-index: 1;
+  font-size: 0;
+  text-align: center;
+  margin: 12px 0 28px;
+}
+
+body > div:first-of-type::before {
+  content: "RANKING";
+  display: inline-block;
+  font-family: 'Press Start 2P', -apple-system, sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+  color: var(--text-cyan);
+  text-shadow:
+    0 0 6px rgba(123, 232, 255, 0.9),
+    0 0 18px rgba(53, 230, 255, 0.6);
+}
+
+/* ===== フィルター（ジャンル・難易度選択） ===== */
+form {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(238, 243, 250, 0.92);
+  border-radius: 14px 14px 0 0;
+  padding: 16px 16px 14px;
+}
+
+form select {
+  flex: 1;
+  border: none;
+  background: #ffffff;
+  color: #1a2733;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 28px 9px 12px;
+  border-radius: 999px;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #4a5b6b 50%),
+                     linear-gradient(135deg, #4a5b6b 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+form select:nth-of-type(2) {
+  background-color: #dfe4ea;
+  color: #3c4a58;
+}
+
+form button[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: #0a2a44;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== ランキング一覧を包むdiv ===== */
+form + div {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  background: rgba(50, 250, 10, 0.6);
+  border-radius: 0 0 14px 14px;
+  padding: 16px 12px 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* データが無い場合の案内文 */
+form + div > div > p {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 24px 0;
+}
+
+/* ランキング各行 */
+form + div > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* 順位番号（バッジ） */
+form + div > div > p:nth-child(1):not(:only-child) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ユーザー名 */
+form + div > div > p:nth-child(2):not(:only-child) {
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* スコア */
+form + div > div > p:nth-child(3):not(:only-child) {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+form + div > div > p:nth-child(3):not(:only-child)::after {
+  content: "pt";
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+/* 1位：ゴールド */
+form + div > div:nth-child(1) {
+  background: linear-gradient(90deg, rgba(255, 210, 63, 0.96), rgba(255, 210, 63, 0.78));
+}
+form + div > div:nth-child(1) p {
+  color: #4a2e00 !important;
+}
+form + div > div:nth-child(1) p:nth-child(1) {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* 2位：シルバー */
+form + div > div:nth-child(2) {
+  background: linear-gradient(90deg, rgba(207, 216, 227, 0.75), rgba(207, 216, 227, 0.5));
+}
+
+/* 3位：ブロンズ */
+form + div > div:nth-child(3) {
+  background: linear-gradient(90deg, rgba(255, 169, 77, 0.92), rgba(255, 169, 77, 0.68));
+}
+form + div > div:nth-child(3) p {
+  color: #4a2200 !important;
+}
+form + div > div:nth-child(3) p:nth-child(1) {
+  background: rgba(255, 255, 255, 0.7);
+}

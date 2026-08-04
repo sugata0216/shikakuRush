@@ -1,0 +1,215 @@
+:root {
+  --bg-deep: #050b18;
+  --panel-border: #35e6ff;
+  --text-cyan: #7be8ff;
+  --text-white: #f2fbff;
+  --text-dim: rgba(242, 251, 255, 0.65);
+  --mint: #8fe6b0;
+  --mint-dim: rgba(143, 230, 176, 0.16);
+  --accent-orange: #ffb27a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-white);
+
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+
+  padding: max(28px, env(safe-area-inset-top)) 20px
+           calc(96px + env(safe-area-inset-bottom))
+           20px;
+
+  background-image: url('../../img/background-img.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-deep);
+
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(3, 9, 20, 0.5) 0%,
+    rgba(3, 9, 20, 0.3) 45%,
+    rgba(3, 9, 20, 0.55) 100%
+  );
+}
+
+/* ページタイトル */
+h1 {
+  position: relative;
+  z-index: 1;
+  font-family: 'Press Start 2P', -apple-system, sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: var(--mint);
+  text-shadow:
+    0 0 6px rgba(143, 230, 176, 0.9),
+    0 0 18px rgba(123, 232, 255, 0.5);
+  margin: 12px 0 32px;
+  text-align: center;
+}
+
+/* メニュー項目を包むdiv */
+body > div:first-of-type {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* メニュー項目（各div）共通スタイル */
+body > div:first-of-type > div {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 16px 20px;
+  border-radius: 999px;
+  background: #d6f7e2;
+  border: 1.5px solid var(--mint);
+  color: #0f3d24;
+  box-shadow: 0 0 14px rgba(143, 230, 176, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+body > div:first-of-type > div:active {
+  transform: scale(0.98);
+}
+
+/* 「ゲームルール説明」だけシアン系 */
+div[onclick*="ruleModal"] {
+  color: #0b3a4d !important;
+  border-color: var(--text-cyan) !important;
+  background: #cdf1fb !important;
+  box-shadow: 0 0 14px rgba(123, 232, 255, 0.4) !important;
+}
+
+/* 「称号説明」だけオレンジ系 */
+div[onclick*="titleModal"] {
+  color: #7a3a10 !important;
+  border-color: var(--accent-orange) !important;
+  background: #ffe6cf !important;
+  box-shadow: 0 0 14px rgba(255, 178, 122, 0.35) !important;
+}
+
+/* ===== モーダル（詳細ポップアップ） ===== */
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+div[id$="Modal"] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(2, 6, 14, 0.85);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  /* display:none → block に切り替わるたびに再生される */
+  animation: modalOverlayIn 0.2s ease;
+}
+
+div[id$="Modal"] > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 48px);
+  max-width: 340px;
+  max-height: 74vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  background: rgba(4, 12, 26, 0.96);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 42px 22px 26px;
+  box-shadow:
+    0 0 24px rgba(53, 230, 255, 0.5),
+    0 10px 34px rgba(0, 0, 0, 0.6);
+  animation: modalCardIn 0.25s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+div[id$="Modal"] button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(123, 232, 255, 0.12);
+  color: var(--text-white);
+  font-size: 15px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+div[id$="Modal"] h3 {
+  color: var(--mint);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0 0 18px;
+  text-align: center;
+}
+
+div[id$="Modal"] p {
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0 0 14px;
+}
+
+div[id$="Modal"] p:last-of-type {
+  margin-bottom: 0;
+}
+
+div[id$="Modal"] p b {
+  color: var(--text-cyan);
+  font-weight: 700;
+}
