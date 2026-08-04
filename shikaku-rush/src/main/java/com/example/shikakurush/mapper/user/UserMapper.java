@@ -3,6 +3,8 @@ package com.example.shikakurush.mapper.user;
 import com.example.shikakurush.entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
 
@@ -30,4 +32,20 @@ public interface UserMapper {
 
     @Update("UPDATE users SET deleted_flag = true, updated_at = NOW() WHERE id = #{id}")
     void deleteUser(@Param("id") Integer id);
+
+    // 管理者用：全ユーザー取得（削除済み除く）
+    @Select("SELECT * FROM users WHERE deleted_flag = false ORDER BY id ASC")
+    List<User> findAll();
+
+    // 管理者用：ユーザー名で検索
+    @Select("SELECT * FROM users WHERE deleted_flag = false AND username LIKE #{keyword} ORDER BY id ASC")
+    List<User> findByUsernameContaining(@Param("keyword") String keyword);
+
+    // 管理者用：BANする
+    @Update("UPDATE users SET banned = true, updated_at = NOW() WHERE id = #{id}")
+    void banUser(@Param("id") Integer id);
+
+    // 管理者用：BAN解除する
+    @Update("UPDATE users SET banned = false, updated_at = NOW() WHERE id = #{id}")
+    void unbanUser(@Param("id") Integer id);
 }

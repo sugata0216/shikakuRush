@@ -2,6 +2,7 @@ package com.example.shikakurush.controller.user;
 
 import com.example.shikakurush.entity.Ranking;
 import com.example.shikakurush.service.user.DifficultyService;
+import com.example.shikakurush.service.user.GenreService;
 import com.example.shikakurush.service.user.RankingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -16,14 +17,16 @@ public class RankingController {
 
     private final RankingService rankingService;
     private final DifficultyService difficultyService;
+    private final GenreService genreService; // 追加
 
     public RankingController(RankingService rankingService,
-                             DifficultyService difficultyService) {
+                             DifficultyService difficultyService,
+                             GenreService genreService) { // 追加
         this.rankingService = rankingService;
         this.difficultyService = difficultyService;
+        this.genreService = genreService; // 追加
     }
 
-    // ランキング画面
     @GetMapping("/user/ranking")
     public String ranking(@RequestParam(defaultValue = "1") int genreId,
                           @RequestParam(defaultValue = "1") int difficultyId,
@@ -39,6 +42,7 @@ public class RankingController {
         model.addAttribute("selectedGenreId", genreId);
         model.addAttribute("selectedDifficultyId", difficultyId);
         model.addAttribute("difficulties", difficultyService.findAll());
+        model.addAttribute("genres", genreService.findAll()); // 追加
 
         return "user/ranking";
     }

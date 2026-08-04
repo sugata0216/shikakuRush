@@ -1,21 +1,128 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ユーザー一覧管理</title>
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .overlay.active { display: block; }
+        .popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 200;
+            text-align: center;
+        }
+        tr.selected { background: #e0f0ff; }
+    </style>
 </head>
-
 <body>
-    <input type="text">
-    <button type="submit">検索</button>
-    <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    <a href="administrator-top.html">戻る</a>
-</body>
+<h1>ユーザー一覧管理</h1>
 
+<!-- 完了メッセージ -->
+<p th:if="${message}" th:text="${message}"></p>
+
+<!-- 検索フォーム -->
+<form th:action="@{/admin/user}" method="get">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="ユーザー名で検索">
+    <button type="submit">検索</button>
+</form>
+
+<!-- BANボタン（1つのみ） -->
+<button type="button" id="banBtn" disabled onclick="openPopup()">BAN/BAN解除</button>
+
+<!-- ユーザー一覧 -->
+<div th:if="${#lists.isEmpty(users)}">
+    <p>ユーザーが見つかりませんでした。</p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>選択</th>
+        <th>ユーザー名</th>
+        <th>ステータス</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}"
+        class="user-row"
+        th:data-id="${user.id}"
+        th:data-username="${user.username}"
+        th:data-banned="${user.banned}"
+        onclick="selectRow(this)">
+        <td><input type="radio" name="selectedUser" th:value="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.banned} ? 'BAN中' : '正常'"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/admin/user/menu}">戻る</a>
+
+<!-- 確認ポップアップ -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup" style="display:none;">
+    <p id="popupMessage"></p>
+    <form id="banForm" method="post">
+        <input type="hidden" name="id" id="popupUserId">
+        <button type="submit">OK</button>
+        <button type="button" onclick="closePopup()">キャンセル</button>
+    </form>
+</div>
+
+<script>
+    let selectedRow = null;
+
+    function selectRow(row) {
+        // 前の選択を解除
+        if (selectedRow) selectedRow.classList.remove('selected');
+        selectedRow = row;
+        row.classList.add('selected');
+
+        // ラジオボタンを選択
+        row.querySelector('input[type="radio"]').checked = true;
+
+        // BANボタンを有効化
+        document.getElementById('banBtn').disabled = false;
+    }
+
+    function openPopup() {
+        if (!selectedRow) return;
+
+        const id       = selectedRow.dataset.id;
+        const username = selectedRow.dataset.username;
+        const banned   = selectedRow.dataset.banned === 'true';
+
+        document.getElementById('popupUserId').value = id;
+        document.getElementById('popupMessage').textContent =
+            banned
+                ? username + ' のBANを解除しますか？'
+                : username + ' をBANしますか？';
+
+        document.getElementById('banForm').action =
+            banned ? '/admin/user/unban' : '/admin/user/ban';
+
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('popup').style.display = 'block';
+    }
+
+    function closePopup() {
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('popup').style.display = 'none';
+    }
+</script>
+</body>
 </html>

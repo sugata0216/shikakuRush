@@ -1,21 +1,62 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ランキング管理</title>
 </head>
-
 <body>
-    <h1>ランキング一覧</h1>
-    <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    <a href="administrator-top.html">戻る</a>
-    <button type="submit">BAN</button>
-</body>
+<h1>ランキング一覧</h1>
 
+<!-- 完了メッセージ -->
+<p th:if="${message}" th:text="${message}" style="color: green;"></p>
+
+<!-- ジャンル・難易度選択フォーム -->
+<form th:action="@{/admin/ranking}" method="get">
+    <select name="genreId">
+        <option th:each="genre : ${genres}"
+                th:value="${genre.id}"
+                th:text="${genre.name}"
+                th:selected="${genre.id == selectedGenreId}">
+        </option>
+    </select>
+    <select name="difficultyId">
+        <option th:each="difficulty : ${difficulties}"
+                th:value="${difficulty.id}"
+                th:text="${difficulty.name}"
+                th:selected="${difficulty.id == selectedDifficultyId}">
+        </option>
+    </select>
+    <button type="submit">表示</button>
+</form>
+
+<!-- ランキング一覧 + BANフォーム -->
+<form th:action="@{/admin/ranking/ban}" method="post">
+    <input type="hidden" name="genreId" th:value="${selectedGenreId}">
+    <input type="hidden" name="difficultyId" th:value="${selectedDifficultyId}">
+
+    <div th:if="${#lists.isEmpty(rankings)}">
+        <p>まだランキングデータがありません</p>
+    </div>
+
+    <div th:each="ranking, iterStat : ${rankings}">
+        <!-- ラジオボタンで行を選択 -->
+        <input type="radio"
+               name="id"
+               th:value="${ranking.userId}"
+               th:disabled="${ranking.banned}">
+        <span th:text="${iterStat.index + 1}"></span>
+        <span th:text="${ranking.banned} ? 'BAN済みユーザー' : ${ranking.username}"></span>
+        <span th:text="${ranking.score}"></span>
+    </div>
+    <!-- エラーメッセージ -->
+    <p th:if="${error}" th:text="${error}"></p>
+    <!-- BANボタンは1つ -->
+    <button type="submit"
+            onclick="return confirm('選択したユーザーをBANしますか？')">
+        BAN
+    </button>
+</form>
+
+<a th:href="@{/admin/user/menu}">戻る</a>
+</body>
 </html>

@@ -63,8 +63,13 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/img/**",
                                 "/user/report",
-                                "/user/report/complete"
-
+                                "/user/report/complete",
+                                "/admin/inquiry",
+                                "/admin/inquiry/detail",
+                                "/admin/user",
+                                "/admin/user/ban",
+                                "/admin/user/unban",
+                                "/admin/user/menu"
                         ).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()

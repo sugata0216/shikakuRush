@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>ユーザー管理メニュー画面</title>
 </head>
-
 <body>
-    <a href="user-list.html">
-        <h2>ユーザー管理画面</h2>
-        <p>ユーザー一覧管理画面</p>
-    </a>
-    <a href="ranking-management.html">
-        <h2>ランキング管理画面</h2>
-        <p>ランキング管理画面</p>
-    </a>
-    <a href="administrator-top.html">戻る</a>
+<a th:href="@{/admin/user}">
+    <h2>ユーザー管理画面</h2>
+    <p>ユーザー一覧管理画面</p>
+</a>
+<a th:href="@{/admin/ranking}">
+    <h2>ランキング管理画面</h2>
+    <p>ランキング管理画面</p>
+</a>
+<a th:href="@{/admin/top}">戻る</a>
 </body>
-
 </html>

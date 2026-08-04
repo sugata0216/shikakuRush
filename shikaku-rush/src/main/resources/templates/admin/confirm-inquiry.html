@@ -1,20 +1,76 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>お問い合わせ確認</title>
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .overlay.active { display: block; }
+        .popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 200;
+        }
+    </style>
 </head>
-
 <body>
-    <h1>お問い合わせ一覧</h1>
-    <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    <a href="administrator-top.html">戻る</a>
-</body>
+<h1>お問い合わせ一覧</h1>
 
+<div th:if="${#lists.isEmpty(inquiries)}">
+    <p>お問い合わせはありません。</p>
+</div>
+
+<div th:each="inquiry : ${inquiries}">
+    <div th:text="${inquiry.id}"></div>
+    <div th:text="${inquiry.title}"></div>
+    <div>
+        <button type="button"
+                class="detail-btn"
+                th:data-id="${inquiry.id}"
+                th:data-title="${inquiry.title}"
+                th:data-body="${inquiry.body}">
+            詳細
+        </button>
+    </div>
+</div>
+
+<a th:href="@{/admin/top}">戻る</a>
+
+<!-- ポップアップ -->
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup" style="display:none;">
+    <h2 id="popupTitle"></h2>
+    <p id="popupBody"></p>
+    <button type="button" onclick="closePopup()">×</button>
+</div>
+
+<script>
+    document.querySelectorAll('.detail-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.getElementById('popupTitle').textContent = this.dataset.title;
+            document.getElementById('popupBody').textContent  = this.dataset.body;
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('popup').style.display = 'block';
+        });
+    });
+
+    function closePopup() {
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('popup').style.display = 'none';
+    }
+</script>
+</body>
 </html>
