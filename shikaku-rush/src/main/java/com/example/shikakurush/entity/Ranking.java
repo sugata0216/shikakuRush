@@ -10,6 +10,7 @@ public class Ranking {
     private int genreId;
     private int difficultyId;
     private int score;
+    private Boolean banned; // 追加
     private LocalDateTime updatedAt;
     private String username;
 }
