@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>マイページ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  
+    <link rel="stylesheet" th:href="@{/css/user/my-page.css}">
 </head>
 <body>
   <h1>My Page</h1>
@@ -10,10 +12,10 @@
     <div>
       <!-- ✅ タブ切り替えボタンをリンクに変更 -->
       <a th:href="@{/user/my-page(tab=1, genreId=${selectedGenreId}, difficultyId=${selectedDifficultyId})}">
-        <button type="button">マイページ</button>
+        <button type="button" th:classappend="${activeTab == 1} ? 'active' : ''">マイページ</button>
       </a>
       <a th:href="@{/user/my-page(tab=2, genreId=${selectedGenreId}, difficultyId=${selectedDifficultyId})}">
-        <button type="button">マイスコア</button>
+        <button type="button" th:classappend="${activeTab == 2} ? 'active' : ''">マイスコア</button>
       </a>
     </div>
 

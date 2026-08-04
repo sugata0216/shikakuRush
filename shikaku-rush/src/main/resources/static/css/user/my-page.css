@@ -1,0 +1,433 @@
+:root {
+  --bg-deep: #050b18;
+  --panel-border: #35e6ff;
+  --text-cyan: #7be8ff;
+  --text-white: #f2fbff;
+  --text-dim: rgba(242, 251, 255, 0.65);
+  --gold: #ffd23f;
+  --silver: #cfd8e3;
+  --bronze: #ffa94d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Segoe UI", sans-serif;
+  color: var(--text-white);
+
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+
+  padding: max(28px, env(safe-area-inset-top)) 20px
+           calc(96px + env(safe-area-inset-bottom))
+           20px;
+
+  background-image: url('../../img/background-img.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-deep);
+
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(3, 9, 20, 0.5) 0%,
+    rgba(3, 9, 20, 0.3) 45%,
+    rgba(3, 9, 20, 0.55) 100%
+  );
+}
+
+/* ページタイトル */
+h1 {
+  position: relative;
+  z-index: 1;
+  font-family: 'Press Start 2P', -apple-system, sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: var(--text-cyan);
+  text-shadow:
+    0 0 6px rgba(123, 232, 255, 0.9),
+    0 0 18px rgba(53, 230, 255, 0.6);
+  margin: 12px 0 20px;
+  text-align: center;
+}
+
+/* ===== 全体パネル（body直下のdiv） ===== */
+body > div {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(4, 12, 26, 0.6);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  box-shadow:
+    0 0 16px rgba(53, 230, 255, 0.35),
+    0 0 40px rgba(53, 230, 255, 0.12);
+}
+
+/* ===== タブ切り替え（パネル最上部、フチいっぱいに広がる） ===== */
+body > div > div:first-of-type {
+  display: flex;
+  width: 100%;
+}
+
+body > div > div:first-of-type a {
+  flex: 1;
+  display: block;
+  text-decoration: none;
+}
+
+body > div > div:first-of-type button {
+  width: 100%;
+  border: none;
+  background: #f2fbff;
+  color: #0a1a2e;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 14px 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body > div > div:first-of-type a:first-child button {
+  border-right: 1px solid rgba(53, 230, 255, 0.35);
+}
+
+/* タブ選択中の見た目を出したい場合はHTML側に active クラス等の追加が必要です */
+body > div > div:first-of-type button.active {
+  background: #ffffff;
+  color: #0a1a2e;
+}
+
+/* ===== タブ中身共通の余白 ===== */
+#tab1,
+#tab2 {
+  padding: 22px 20px 26px;
+}
+
+/* h3見出し（ユーザー名／称号） */
+#tab1 h3 {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-white);
+  margin: 0 12px 10px 0;
+  white-space: nowrap;
+}
+
+#tab1 h3:not(:first-of-type) {
+  margin-top: 18px;
+}
+
+/* ユーザー名変更フォーム・称号変更フォームを見出しと同じ行に */
+#tab1 form {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+
+#tab1 input[type="text"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(123, 232, 255, 0.55);
+  color: var(--text-white);
+  font-size: 14px;
+  padding: 4px 2px 6px;
+  width: 150px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#tab1 input[type="text"]::placeholder {
+  color: rgba(242, 251, 255, 0.35);
+  font-size: 11px;
+}
+
+#tab1 input[type="text"]:disabled {
+  color: rgba(242, 251, 255, 0.4);
+  border-bottom-color: rgba(123, 232, 255, 0.2);
+}
+
+#tab1 select {
+  background: rgba(4, 12, 26, 0.7);
+  border: 1px solid var(--text-cyan);
+  color: var(--text-cyan);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 「変更」ボタン（ユーザー名／称号） */
+#tab1 form button[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid rgba(242, 251, 255, 0.4);
+  background: #eef3f7;
+  color: #0a1a2e;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#tab1 form button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* エラー・成功・注意メッセージ（p） */
+#tab1 > p {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+/* お問い合わせ・ログアウト・退会 の3つのボタン群 */
+#tab1 br {
+  display: none;
+}
+
+#tab1 a[href*="inquiry"],
+#tab1 form[action*="logout"] button,
+#tab1 form[action*="delete"] button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px 16px;
+  border-radius: 999px;
+  margin-top: 16px;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#tab1 a[href*="inquiry"] {
+  background: #f2fbff;
+  color: #0a1a2e;
+}
+
+#tab1 form[action*="logout"] {
+  display: block;
+}
+
+#tab1 form[action*="logout"] button {
+  width: 100%;
+  background: #f2fbff;
+  color: #0a1a2e;
+}
+
+#tab1 form[action*="delete"] {
+  display: block;
+}
+
+#tab1 form[action*="delete"] button {
+  width: 100%;
+  background: #ff5c5c;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(255, 92, 92, 0.5);
+}
+
+/* ===== tab2：マイスコア ===== */
+#tab2 form[action*="my-page"] {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#tab2 form[action*="my-page"] select {
+  flex: 1;
+  background: rgba(4, 12, 26, 0.7);
+  border: 1px solid rgba(123, 232, 255, 0.6);
+  color: var(--text-white);
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-cyan) 50%),
+                     linear-gradient(135deg, var(--text-cyan) 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+#tab2 form[action*="my-page"] button {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: #f2fbff;
+  color: #0a1a2e;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* カルーセル全体（矢印ボタンの基準位置） */
+#carousel {
+  position: relative;
+  padding: 0 24px;
+}
+
+#carousel > button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(123, 232, 255, 0.15);
+  color: var(--text-cyan);
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#carousel > button:first-of-type {
+  left: -6px;
+}
+
+#carousel > button:last-of-type {
+  right: -6px;
+}
+
+/* カード本体（カテゴリ1件ぶん） */
+#carousel > div[id^="card-"] {
+  border: 1.5px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 16px 14px 8px;
+  background: rgba(4, 12, 26, 0.55);
+}
+
+/* カテゴリ名（例：マネジメント） */
+#carousel > div[id^="card-"] > div:first-of-type {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-white);
+  margin-bottom: 12px;
+}
+
+/* スコアが無い場合の案内文 */
+#carousel > div[id^="card-"] p {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+/* 各順位の行 */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* 順位番号 */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div > div:nth-child(1) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* スコア表示（span + small） */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div > div:nth-child(2) {
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+#carousel > div[id^="card-"] span {
+  font-size: 15px;
+}
+
+#carousel > div[id^="card-"] small {
+  font-size: 11px;
+  margin-left: 2px;
+  opacity: 0.8;
+}
+
+/* 1位：ゴールド */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(1) {
+  background: linear-gradient(90deg, rgba(255, 210, 63, 0.9), rgba(255, 210, 63, 0.65));
+}
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(1) div:nth-child(1),
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(1) div:nth-child(2) {
+  color: #4a2e00;
+}
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(1) div:nth-child(1) {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* 2位：シルバー */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(2) {
+  background: linear-gradient(90deg, rgba(207, 216, 227, 0.55), rgba(207, 216, 227, 0.3));
+}
+
+/* 3位：ブロンズ */
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(3) {
+  background: linear-gradient(90deg, rgba(255, 169, 77, 0.8), rgba(255, 169, 77, 0.5));
+}
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(3) div:nth-child(1),
+#carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(3) div:nth-child(2) {
+  color: #4a2200;
+}
