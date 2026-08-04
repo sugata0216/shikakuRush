@@ -75,13 +75,27 @@
             <span>change</span>
         </button>
 
-        <form th:action="@{/user/game/giveup}" method="post" class="giveup-form">
-            <button type="submit" class="giveup-button">
+        <!-- ✅ 送信フォームはそのまま残し、ボタンは type="button" にしてポップアップを開くだけにする -->
+        <form th:action="@{/user/game/giveup}" method="post" class="giveup-form" id="giveupForm">
+            <button type="button" class="giveup-button" onclick="openModal('giveupModal')">
                 <!-- ★ここにGiveUp画像のパスを入力してください★ -->
                 <img th:src="@{/img/giveup-button.png}" src="ここにGiveUp画像のパス" alt="" class="button-icon">
                 <span>give up</span>
             </button>
         </form>
+    </div>
+</div>
+
+<!-- ✅ Give Up確認モーダル -->
+<div id="giveupModal" style="display: none;">
+    <div>
+        <button onclick="closeModal('giveupModal')">✕</button>
+        <h3>ゲームを中断しますか？</h3>
+        <p>中断すると、今回のスコアは記録されません。</p>
+        <div class="modal-buttons">
+            <button type="button" class="modal-cancel" onclick="closeModal('giveupModal')">キャンセル</button>
+            <button type="button" class="modal-confirm" onclick="document.getElementById('giveupForm').submit();">確認</button>
+        </div>
     </div>
 </div>
 
@@ -91,7 +105,7 @@
     const timeLeftInput = document.getElementById('timeLeftInput');
     const timedOutInput = document.getElementById('timedOutInput');
     const answerInput = document.getElementById('answerInput');
-    const formEl = document.querySelector('form');
+    const formEl = document.querySelector('.answer-form');
 
     const timer = setInterval(() => {
         timeLeft--;
@@ -117,6 +131,21 @@
         const secs = (seconds % 60).toString().padStart(2, '0');
         return `${mins} : ${secs}`;
     }
+
+    /* ✅ モーダル開閉(helpページと同じ仕組み) */
+    function openModal(id) {
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) closeModal(this.id);
+        });
+    });
 </script>
 </body>
 </html>

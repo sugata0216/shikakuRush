@@ -78,8 +78,8 @@ h1 {
   text-align: center;
 }
 
-/* ===== 全体パネル（body直下のdiv） ===== */
-body > div {
+/* ===== 全体パネル(body直下の最初のdivのみ ※メニューバーは除外) ===== */
+body > div:first-of-type {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -95,19 +95,19 @@ body > div {
     0 0 40px rgba(53, 230, 255, 0.12);
 }
 
-/* ===== タブ切り替え（パネル最上部、フチいっぱいに広がる） ===== */
-body > div > div:first-of-type {
+/* ===== タブ切り替え(パネル最上部、フチいっぱいに広がる) ===== */
+body > div:first-of-type > div:first-of-type {
   display: flex;
   width: 100%;
 }
 
-body > div > div:first-of-type a {
+body > div:first-of-type > div:first-of-type a {
   flex: 1;
   display: block;
   text-decoration: none;
 }
 
-body > div > div:first-of-type button {
+body > div:first-of-type > div:first-of-type button {
   width: 100%;
   border: none;
   background: #f2fbff;
@@ -120,12 +120,12 @@ body > div > div:first-of-type button {
   -webkit-tap-highlight-color: transparent;
 }
 
-body > div > div:first-of-type a:first-child button {
+body > div:first-of-type > div:first-of-type a:first-child button {
   border-right: 1px solid rgba(53, 230, 255, 0.35);
 }
 
 /* タブ選択中の見た目を出したい場合はHTML側に active クラス等の追加が必要です */
-body > div > div:first-of-type button.active {
+body > div:first-of-type > div:first-of-type button.active {
   background: #ffffff;
   color: #0a1a2e;
 }
@@ -136,7 +136,7 @@ body > div > div:first-of-type button.active {
   padding: 22px 20px 26px;
 }
 
-/* h3見出し（ユーザー名／称号） */
+/* h3見出し(ユーザー名／称号) */
 #tab1 h3 {
   display: inline-block;
   vertical-align: middle;
@@ -194,7 +194,7 @@ body > div > div:first-of-type button.active {
   appearance: none;
 }
 
-/* 「変更」ボタン（ユーザー名／称号） */
+/* 「変更」ボタン(ユーザー名／称号) */
 #tab1 form button[type="submit"] {
   -webkit-appearance: none;
   appearance: none;
@@ -214,7 +214,7 @@ body > div > div:first-of-type button.active {
   cursor: not-allowed;
 }
 
-/* エラー・成功・注意メッセージ（p） */
+/* エラー・成功・注意メッセージ(p) */
 #tab1 > p {
   display: block;
   width: 100%;
@@ -271,7 +271,7 @@ body > div > div:first-of-type button.active {
   box-shadow: 0 0 14px rgba(255, 92, 92, 0.5);
 }
 
-/* ===== tab2：マイスコア ===== */
+/* ===== tab2:マイスコア ===== */
 #tab2 form[action*="my-page"] {
   display: flex;
   gap: 10px;
@@ -309,7 +309,7 @@ body > div > div:first-of-type button.active {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* カルーセル全体（矢印ボタンの基準位置） */
+/* カルーセル全体(矢印ボタンの基準位置) */
 #carousel {
   position: relative;
   padding: 0 24px;
@@ -339,7 +339,7 @@ body > div > div:first-of-type button.active {
   right: -6px;
 }
 
-/* カード本体（カテゴリ1件ぶん） */
+/* カード本体(カテゴリ1件ぶん) */
 #carousel > div[id^="card-"] {
   border: 1.5px solid var(--panel-border);
   border-radius: 10px;
@@ -347,7 +347,7 @@ body > div > div:first-of-type button.active {
   background: rgba(4, 12, 26, 0.55);
 }
 
-/* カテゴリ名（例：マネジメント） */
+/* カテゴリ名(例:マネジメント) */
 #carousel > div[id^="card-"] > div:first-of-type {
   text-align: center;
   font-size: 14px;
@@ -390,7 +390,7 @@ body > div > div:first-of-type button.active {
   font-weight: 700;
 }
 
-/* スコア表示（span + small） */
+/* スコア表示(span + small) */
 #carousel > div[id^="card-"] > div:nth-of-type(2) > div > div:nth-child(2) {
   font-weight: 700;
   color: var(--text-white);
@@ -406,7 +406,7 @@ body > div > div:first-of-type button.active {
   opacity: 0.8;
 }
 
-/* 1位：ゴールド */
+/* 1位:ゴールド */
 #carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(1) {
   background: linear-gradient(90deg, rgba(255, 210, 63, 0.9), rgba(255, 210, 63, 0.65));
 }
@@ -418,12 +418,12 @@ body > div > div:first-of-type button.active {
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* 2位：シルバー */
+/* 2位:シルバー */
 #carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(2) {
   background: linear-gradient(90deg, rgba(207, 216, 227, 0.55), rgba(207, 216, 227, 0.3));
 }
 
-/* 3位：ブロンズ */
+/* 3位:ブロンズ */
 #carousel > div[id^="card-"] > div:nth-of-type(2) > div:nth-child(3) {
   background: linear-gradient(90deg, rgba(255, 169, 77, 0.8), rgba(255, 169, 77, 0.5));
 }
