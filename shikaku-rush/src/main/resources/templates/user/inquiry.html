@@ -2,16 +2,18 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>お問い合わせ</title>
+    <link rel="stylesheet" th:href="@{/css/user/inquiry.css}" />
 </head>
 <body>
 <h1>お問い合わせ</h1>
 
 <!-- ✅ 成功メッセージ -->
-<p th:if="${successMessage}" th:text="${successMessage}"></p>
+<p class="msg-success" th:if="${successMessage}" th:text="${successMessage}"></p>
 
 <!-- ✅ エラーメッセージ -->
-<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+<p class="msg-error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
 
 <form th:action="@{/user/inquiry}" method="post">
     <label>タイトル</label>

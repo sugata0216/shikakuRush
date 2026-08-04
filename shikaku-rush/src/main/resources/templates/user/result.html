@@ -2,73 +2,44 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>リザルト</title>
-    <style>
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 100;
-        }
-        .overlay.active { display: block; }
-        .popup {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            z-index: 200;
-        }
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .popup-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-        .card { display: none; }
-        .card.active { display: block; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user/result.css}" />
 </head>
-<body>
+<body th:classappend="${gameOver} ? 'is-gameover' : 'is-clear'">
 
 <!-- ✅ ゲームクリア時 -->
-<div th:if="${!gameOver}">
-    <div>
-        <h1>Game</h1>
-        <h1>Clear!!</h1>
+<div class="result-page" th:if="${!gameOver}">
+
+    <!-- スプラッシュ演出 -->
+    <div class="splash-screen" id="splash" onclick="hideSplash()">
+        <h1 class="splash-title splash-line1">Game</h1>
+        <h1 class="splash-title splash-line2">Clear!!</h1>
     </div>
 
     <!-- ✅ カルーセル -->
-    <div>
-        <button type="button" onclick="prevCard()">◀</button>
-        <button type="button" onclick="nextCard()">▶</button>
-    </div>
+    <div class="carousel-wrapper">
+        <button type="button" class="carousel-arrow arrow-left" onclick="prevCard()">&#9664;</button>
+        <button type="button" class="carousel-arrow arrow-right" onclick="nextCard()">&#9654;</button>
 
-    <!-- ✅ カード1：問題一覧 -->
-    <div id="card-0" class="card active">
-        <h1>Game Clear!!</h1>
-        <p>Score</p>
-        <p th:text="${score}"></p>
+        <!-- ✅ カード1：問題一覧 -->
+        <div id="card-0" class="card active result-card">
+            <h2 class="result-title">Game Clear!!</h2>
 
-        <div th:each="question, iterStat : ${questions}" th:if="${iterStat.index < 10}">
-            <div>
-                <div th:if="${correctList != null}">
-                    <span th:if="${correctList[iterStat.index]}">〇</span>
-                    <span th:unless="${correctList[iterStat.index]}">×</span>
-                </div>
-                <div th:text="${iterStat.index + 1}"></div>
-                <div th:text="${question.questionText}"></div>
-                <div>
+            <div class="score-box">
+                <p class="score-label">Score</p>
+                <p class="score-value">$<span th:text="${#numbers.formatInteger(score, 8)}">00000000</span></p>
+            </div>
+
+            <div class="result-list">
+                <div class="result-row" th:each="question, iterStat : ${questions}" th:if="${iterStat.index < 10}">
+                    <span class="result-mark" th:if="${correctList != null}">
+                        <span class="mark-correct" th:if="${correctList[iterStat.index]}">&#9675;</span>
+                        <span class="mark-wrong" th:unless="${correctList[iterStat.index]}">&#10005;</span>
+                    </span>
+                    <span class="result-num" th:text="${iterStat.index + 1}"></span>
+                    <span class="result-question" th:text="${question.questionText}"></span>
                     <button type="button"
                             class="detail-btn"
                             th:data-id="${question.id}"
@@ -85,53 +56,61 @@
                     </button>
                 </div>
             </div>
-        </div>
 
-        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
-        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
-    </div>
-
-    <!-- ✅ カード2：ランキング（ALLカテゴリ時のみ表示） -->
-    <div id="card-1" class="card" th:if="${rankings != null}">
-        <h1>Game Clear!!</h1>
-        <h1>RANKING</h1>
-        <div th:if="${#lists.isEmpty(rankings)}">
-            <p>まだランキングデータがありません</p>
-        </div>
-        <div th:each="ranking, iterStat : ${rankings}">
-            <div th:text="${iterStat.index + 1}"></div>
-            <div th:text="${ranking.username}"></div>
-            <div>
-                <span th:text="${ranking.score}"></span>pt
+            <div class="result-actions">
+                <a class="btn-outline" th:href="@{/user/genre}">ジャンル選択に戻る</a>
+                <a class="btn-primary" th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
             </div>
         </div>
 
-        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
-        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+        <!-- ✅ カード2：ランキング（ALLカテゴリ時のみ表示） -->
+        <div id="card-1" class="card result-card" th:if="${rankings != null}">
+            <h2 class="result-title">Game Clear!!</h2>
+            <h3 class="result-subtitle">RANKING</h3>
+
+            <div class="result-list ranking-list">
+                <p class="ranking-empty" th:if="${#lists.isEmpty(rankings)}">まだランキングデータがありません</p>
+                <div class="ranking-row" th:each="ranking, iterStat : ${rankings}" th:classappend="${iterStat.index == 0} ? 'ranking-first'">
+                    <span class="ranking-num" th:text="${iterStat.index + 1}"></span>
+                    <span class="ranking-name" th:text="${ranking.username}"></span>
+                    <span class="ranking-score"><span th:text="${ranking.score}"></span>pt</span>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <a class="btn-outline" th:href="@{/user/genre}">ジャンル選択に戻る</a>
+                <a class="btn-primary" th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- ✅ ゲームオーバー時 -->
-<div th:if="${gameOver}">
-    <div>
-        <h1>Game</h1>
-        <h1>Over...</h1>
+<div class="result-page" th:if="${gameOver}">
+
+    <!-- スプラッシュ演出 -->
+    <div class="splash-screen" id="splash" onclick="hideSplash()">
+        <h1 class="splash-title splash-line1">Game</h1>
+        <h1 class="splash-title splash-line2">Over...</h1>
     </div>
 
-    <div>
-        <h1>Game Over...</h1>
-        <p>Score</p>
-        <p th:text="${score}"></p>
+    <div class="carousel-wrapper">
+        <div id="card-0" class="card active result-card">
+            <h2 class="result-title">Game Over...</h2>
 
-        <div th:each="question, iterStat : ${questions}" th:if="${iterStat.index < answeredCount}">
-            <div>
-                <div th:if="${correctList != null and iterStat.index < #lists.size(correctList)}">
-                    <span th:if="${correctList[iterStat.index]}">〇</span>
-                    <span th:unless="${correctList[iterStat.index]}">×</span>
-                </div>
-                <div th:text="${iterStat.index + 1}"></div>
-                <div th:text="${question.questionText}"></div>
-                <div>
+            <div class="score-box">
+                <p class="score-label">Score</p>
+                <p class="score-value">$<span th:text="${#numbers.formatInteger(score, 8)}">00000000</span></p>
+            </div>
+
+            <div class="result-list">
+                <div class="result-row" th:each="question, iterStat : ${questions}" th:if="${iterStat.index < answeredCount}">
+                    <span class="result-mark" th:if="${correctList != null and iterStat.index < #lists.size(correctList)}">
+                        <span class="mark-correct" th:if="${correctList[iterStat.index]}">&#9675;</span>
+                        <span class="mark-wrong" th:unless="${correctList[iterStat.index]}">&#10005;</span>
+                    </span>
+                    <span class="result-num" th:text="${iterStat.index + 1}"></span>
+                    <span class="result-question" th:text="${question.questionText}"></span>
                     <button type="button"
                             class="detail-btn"
                             th:data-id="${question.id}"
@@ -148,10 +127,12 @@
                     </button>
                 </div>
             </div>
-        </div>
 
-        <a th:href="@{/user/genre}">ジャンル選択に戻る</a>
-        <a th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+            <div class="result-actions">
+                <a class="btn-outline" th:href="@{/user/genre}">ジャンル選択に戻る</a>
+                <a class="btn-primary" th:href="@{/user/loading(genreId=${genreId}, categoryId=${categoryId}, difficultyId=${difficultyId})}">リトライ</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -160,13 +141,13 @@
 <div class="popup" id="popup" style="display: none;">
     <div class="popup-header">
         <span id="popupCategory"></span>
-        <button type="button" onclick="closePopup()">✕</button>
+        <button type="button" class="popup-close" onclick="closePopup()">✕</button>
     </div>
     <p id="popupQuestion"></p>
     <p><strong>正解：</strong><span id="popupAnswer"></span></p>
     <p><strong>解説：</strong><span id="popupExplanation"></span></p>
     <div class="popup-footer">
-        <button type="button" id="reportBtn">問題を報告する</button>
+        <button type="button" class="report-btn" id="reportBtn">問題を報告する</button>
         <span id="popupSource"></span>
     </div>
 </div>
@@ -174,6 +155,18 @@
 <div th:replace="~{user/layout :: menubar}"></div>
 
 <script>
+    // ── スプラッシュ演出 ──────────────────────────────────
+    const splash = document.getElementById('splash');
+
+    function hideSplash() {
+        if (!splash) return;
+        splash.classList.add('hide');
+        setTimeout(() => { splash.style.display = 'none'; }, 500);
+    }
+
+    // 2秒間 Game Clear!! / Game Over... を表示してから結果画面へ切り替え
+    setTimeout(hideSplash, 2000);
+
     // ── カルーセル ────────────────────────────────────────
     let currentCard = 0;
     const cards = document.querySelectorAll('.card');
