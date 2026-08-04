@@ -1,0 +1,425 @@
+/* result.css */
+
+:root {
+    /* ★ここにゲームクリア画面（宇宙背景）の画像パスを入力してください★ */
+    --bg-clear: url('../../img/GameClear.png');
+    /* ★ここにゲームオーバー画面（赤系デジタル背景）の画像パスを入力してください★ */
+    --bg-gameover: url('../../img/GameOver.png');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    font-family: 'Orbitron', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #050515;
+}
+
+body.is-clear {
+    background-image: var(--bg-clear);
+}
+
+body.is-gameover {
+    background-image: var(--bg-gameover);
+    background-color: #1a0000;
+}
+
+.result-page {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── スプラッシュ演出 ─────────────────────────────── */
+.splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1500; /* メニューバー(1000)より前面に出して完全に覆う */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.splash-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* スプラッシュ中は背景を不透明にして、後ろのスコア・ランキングを隠す */
+.is-clear .splash-screen {
+    background-image: var(--bg-clear);
+    background-color: #050515;
+}
+
+.is-gameover .splash-screen {
+    background-image: var(--bg-gameover);
+    background-color: #1a0000;
+}
+
+.splash-title {
+    margin: 0;
+    font-size: 15vw;
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.is-clear .splash-line1 {
+    color: #eafcff;
+    text-shadow: 0 0 12px rgba(0, 210, 255, 0.9), 0 0 28px rgba(0, 210, 255, 0.6);
+}
+
+.is-clear .splash-line2 {
+    color: #39ff6a;
+    text-shadow: 0 0 12px rgba(57, 255, 106, 0.9), 0 0 28px rgba(57, 255, 106, 0.6);
+}
+
+.is-gameover .splash-line1,
+.is-gameover .splash-line2 {
+    color: #ff2b2b;
+    text-shadow: 0 0 12px rgba(255, 43, 43, 0.9), 0 0 30px rgba(255, 43, 43, 0.6);
+}
+
+/* ── カルーセル ───────────────────────────────────── */
+.carousel-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 44px 130px;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+}
+
+.arrow-left { left: 6px; }
+.arrow-right { right: 6px; }
+
+/* ── リザルトカード ───────────────────────────────── */
+.card { display: none; width: 100%; }
+.card.active { display: block; }
+
+.result-card {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 16px;
+    border: 1.5px solid #00d2ff;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.35);
+    padding: 18px 16px;
+}
+
+.is-gameover .result-card {
+    border-color: #ff2b2b;
+    box-shadow: 0 0 20px rgba(255, 43, 43, 0.35);
+}
+
+.result-title {
+    text-align: center;
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 900;
+    color: #39ff6a;
+    text-shadow: 0 0 10px rgba(57, 255, 106, 0.7);
+}
+
+.is-gameover .result-title {
+    color: #ff2b2b;
+    text-shadow: 0 0 10px rgba(255, 43, 43, 0.7);
+}
+
+.result-subtitle {
+    text-align: center;
+    margin: 0 0 14px;
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffe066;
+    text-shadow: 0 0 10px rgba(255, 224, 102, 0.7);
+}
+
+/* ── スコア ───────────────────────────────────────── */
+.score-box {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.score-label {
+    margin: 0 0 2px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.score-value {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffe066;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 224, 102, 0.8);
+}
+
+/* ── 問題一覧 ─────────────────────────────────────── */
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 46vh;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 2px;
+}
+
+.result-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(0, 210, 255, 0.4);
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.is-gameover .result-row {
+    border-color: rgba(255, 43, 43, 0.4);
+}
+
+.result-mark {
+    width: 16px;
+    flex-shrink: 0;
+    text-align: center;
+    font-weight: 900;
+}
+
+.mark-correct { color: #39ff6a; }
+.mark-wrong { color: #ff4444; }
+
+.result-num {
+    width: 16px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+    opacity: 0.8;
+}
+
+.result-question {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-btn {
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 10px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+/* ── ランキング ───────────────────────────────────── */
+.ranking-list {
+    max-height: 50vh;
+}
+
+.ranking-empty {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.ranking-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.ranking-row.ranking-first {
+    background: #ffe066;
+    border-color: #ffe066;
+    color: #1a1a2e;
+    box-shadow: 0 0 14px rgba(255, 224, 102, 0.6);
+}
+
+.ranking-num {
+    width: 20px;
+    flex-shrink: 0;
+    font-weight: 900;
+    text-align: center;
+}
+
+.ranking-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ranking-score {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 13px;
+    color: #ffe066;
+}
+
+.ranking-row.ranking-first .ranking-score {
+    color: #1a1a2e;
+}
+
+/* ── アクションボタン ─────────────────────────────── */
+.result-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.result-actions a {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 10px 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.btn-outline {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+}
+
+.btn-primary {
+    background: #00a3d9;
+    border: 1.5px solid #00d2ff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+.is-gameover .btn-primary {
+    background: #a00000;
+    border-color: #ff2b2b;
+    box-shadow: 0 0 10px rgba(255, 43, 43, 0.5);
+}
+
+/* ── 詳細ポップアップ ─────────────────────────────── */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+}
+
+.overlay.active { display: block; }
+
+.popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a1a;
+    border: 1.5px solid #00d2ff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    color: #ffffff;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 420px;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 200;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #00d2ff;
+    font-weight: 700;
+}
+
+.popup-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.popup-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.report-btn {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+#popupSource {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
