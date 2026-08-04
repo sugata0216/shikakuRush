@@ -224,3 +224,119 @@ body {
     height: 20px;
     object-fit: contain;
 }
+
+/* ==========================
+   Give Up確認モーダル
+   (helpページの div[id$="Modal"] パターンを踏襲)
+========================== */
+
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+div[id$="Modal"] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(2, 6, 14, 0.85);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: modalOverlayIn 0.2s ease;
+}
+
+div[id$="Modal"] > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 48px);
+  max-width: 340px;
+
+  background: rgba(4, 12, 26, 0.96);
+  border: 1.5px solid #00d2ff;
+  border-radius: 12px;
+  padding: 42px 22px 26px;
+  box-shadow:
+    0 0 24px rgba(0, 210, 255, 0.5),
+    0 10px 34px rgba(0, 0, 0, 0.6);
+  animation: modalCardIn 0.25s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+div[id$="Modal"] > div > button:first-child {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 210, 255, 0.15);
+  color: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+div[id$="Modal"] h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+div[id$="Modal"] p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-cancel,
+.modal-confirm {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.modal-cancel:active,
+.modal-confirm:active {
+  transform: scale(0.95);
+}
+
+.modal-cancel {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.modal-confirm {
+  background-color: #a00000;
+  color: #ffffff;
+  border: 1px solid #dc3545;
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.4);
+}
