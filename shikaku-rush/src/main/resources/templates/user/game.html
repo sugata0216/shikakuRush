@@ -3,88 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <title>ゲーム</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user/game.css}" />
 </head>
 <body>
-<div>
-    <div>
-        <h4>Category</h4>
-        <h4 th:text="${categoryName}"></h4>
-    </div>
-    <div>
-        <h4>Time</h4>
-        <!-- 制限時間をThymeleafで初期値としてセット -->
-        <h3 id="timer" th:text="${timeLimit}"></h3>
-    </div>
-    <div>
-        <h4>question</h4>
-        <h4 th:text="${currentIndex + 1} + '/' + ${totalQuestions}"></h4>
-    </div>
-</div>
 
-<img src="" alt="">
-
-<div>
-    <div>question</div>
-    <p th:text="${question.questionText}"></p>
-</div>
-
-<!-- 選択肢をフォームのボタンで送信 -->
-<form th:action="@{/user/game/answer}" method="post">
-    <input type="hidden" name="answer" id="answerInput" value="">
-    <input type="hidden" name="timeLeft" id="timeLeftInput" value="60">
-    <div>
-        <div th:onclick="|submitAnswer('1')|" style="cursor: pointer;">
-            <div>A</div>
-            <p th:text="${question.choice1}"></p>
+<div class="game-container">
+    <!-- ヘッダーセクション -->
+    <div class="header">
+        <div class="header-item">
+            <h4>Category</h4>
+            <h4 th:text="${categoryName}">ストラテジ</h4>
         </div>
-        <div th:onclick="|submitAnswer('2')|" style="cursor: pointer;">
-            <div>B</div>
-            <p th:text="${question.choice2}"></p>
+        <div class="header-item">
+            <h4>TIME</h4>
+            <h3 id="timer" th:text="${timeLimit}">00 : 14</h3>
         </div>
-        <div th:onclick="|submitAnswer('3')|" style="cursor: pointer;">
-            <div>C</div>
-            <p th:text="${question.choice3}"></p>
-        </div>
-        <div th:onclick="|submitAnswer('4')|" style="cursor: pointer;">
-            <div>D</div>
-            <p th:text="${question.choice4}"></p>
+        <div class="header-item">
+            <h4>question</h4>
+            <h4 th:text="${currentIndex + 1} + '/' + ${totalQuestions}">2/10</h4>
         </div>
     </div>
-    <input type="hidden" name="timedOut" id="timedOutInput" value="false">
-</form>
 
-<div>
-    <button type="button"
-            th:disabled="${changeUsed}"
-            onclick="window.location.href='/user/game/change'">Change</button>
-    <!-- Give upもフォームでPOST送信 -->
-    <form th:action="@{/user/game/giveup}" method="post">
-        <button type="submit">Give Up</button>
+    <!-- 敵画像セクション -->
+    <div class="enemy-container">
+        <!-- ★ここに敵画像のパスを入力してください★ -->
+        <img th:src="@{/img/enemy.png}" src="../../static/img/enemy.png" alt="敵キャラクター" class="enemy-image">
+    </div>
+
+    <!-- 問題テキストセクション -->
+    <div class="question-container">
+        <div class="question-label">question</div>
+        <p class="question-text" th:text="${question.questionText}">情報戦略の投資効果を評価するとき、利益額を分子に、投資額を分母にして算出するものはどれか。</p>
+    </div>
+
+    <!-- 選択肢セクション -->
+    <form th:action="@{/user/game/answer}" method="post" class="answer-form">
+        <input type="hidden" name="answer" id="answerInput" value="">
+        <input type="hidden" name="timeLeft" id="timeLeftInput" value="60">
+        
+        <div class="choices-grid">
+            <div class="answer-choice choice-a" th:onclick="|submitAnswer('1')|" style="cursor: pointer;">
+                <div class="choice-label">A</div>
+                <p class="choice-text" th:text="${question.choice1}">EVA</p>
+            </div>
+            <div class="answer-choice choice-b" th:onclick="|submitAnswer('2')|" style="cursor: pointer;">
+                <div class="choice-label">B</div>
+                <p class="choice-text" th:text="${question.choice2}">IRR</p>
+            </div>
+            <div class="answer-choice choice-c" th:onclick="|submitAnswer('3')|" style="cursor: pointer;">
+                <div class="choice-label">C</div>
+                <p class="choice-text" th:text="${question.choice3}">NPV</p>
+            </div>
+            <div class="answer-choice choice-d" th:onclick="|submitAnswer('4')|" style="cursor: pointer;">
+                <div class="choice-label">D</div>
+                <p class="choice-text" th:text="${question.choice4}">ROI</p>
+            </div>
+        </div>
+        <input type="hidden" name="timedOut" id="timedOutInput" value="false">
     </form>
+
+    <!-- アクションボタンセクション -->
+    <div class="action-buttons">
+        <button type="button"
+                class="change-button"
+                th:disabled="${changeUsed}"
+                onclick="window.location.href='/user/game/change'">
+            <!-- ★ここにChange画像のパスを入力してください★ -->
+            <img th:src="@{/img/change-button.png}" src="ここにChange画像のパス" alt="" class="button-icon">
+            <span>change</span>
+        </button>
+
+        <form th:action="@{/user/game/giveup}" method="post" class="giveup-form">
+            <button type="submit" class="giveup-button">
+                <!-- ★ここにGiveUp画像のパスを入力してください★ -->
+                <img th:src="@{/img/giveup-button.png}" src="ここにGiveUp画像のパス" alt="" class="button-icon">
+                <span>give up</span>
+            </button>
+        </form>
+    </div>
 </div>
 
 <script>
-    // タイマーの初期値をThymeleafから受け取る
-    let timeLeft = /*[[${timeLimit}]]*/ 30;
+    let timeLeft = 30;
     const timerEl = document.getElementById('timer');
+    const timeLeftInput = document.getElementById('timeLeftInput');
+    const timedOutInput = document.getElementById('timedOutInput');
+    const answerInput = document.getElementById('answerInput');
+    const formEl = document.querySelector('form');
 
     const timer = setInterval(() => {
         timeLeft--;
-        timerEl.textContent = timeLeft;
-        document.getElementById('timeLeftInput').value = timeLeft;
+        timerEl.textContent = formatTime(timeLeft);
+        timeLeftInput.value = timeLeft;
 
         if (timeLeft <= 0) {
             clearInterval(timer);
-            document.getElementById('timedOutInput').value = 'true';
-            document.getElementById('answerInput').value = '';
-            document.querySelector('form').submit();
+            timedOutInput.value = 'true';
+            answerInput.value = '';
+            formEl.submit();
         }
     }, 1000);
 
     function submitAnswer(answer) {
         clearInterval(timer);
-        document.getElementById('answerInput').value = answer;
-        document.querySelector('form').submit();
+        answerInput.value = answer;
+        formEl.submit();
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        return `${mins} : ${secs}`;
     }
 </script>
 </body>
