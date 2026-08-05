@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -7,9 +7,9 @@
 </head>
 
 <body>
-    <a href="create-notice.html">お知らせ作成画面</a>
-    <a href="notice-list.html">お知らせ一覧画面</a>
-    <a href="administrator-top.html">戻る</a>
+<a th:href="@{/admin/notification/new}">お知らせ作成画面</a>
+<a th:href="@{/admin/notification}">お知らせ一覧画面</a>
+<a th:href="@{/admin/top}">戻る</a>
 </body>
 
 </html>

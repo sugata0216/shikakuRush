@@ -5,6 +5,8 @@ import com.example.shikakurush.repository.user.ReportRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ReportService {
 
@@ -21,5 +23,10 @@ public class ReportService {
         report.setQuestionId(questionId);
         report.setDetail(detail);
         reportRepository.save(report);
+    }
+
+    // ✅ 追加
+    public List<Report> findAll() {
+        return reportRepository.findAll();
     }
 }

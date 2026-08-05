@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>お知らせ作成</title>
+    <title th:text="${notification.id > 0} ? 'お知らせ編集' : 'お知らせ作成'">お知らせ作成</title>
 </head>
 
 <body>
+<form th:action="${notification.id > 0} ? @{'/admin/notification/' + ${notification.id}} : @{/admin/notification}"
+      method="post">
+
     <p>タイトル：</p>
-    <input type="text" name="title">
+    <input type="text" name="title" th:value="${notification.title}">
+
     <p>本文：</p>
-    <textarea name="content" rows="10" cols="30"></textarea>
-    <a href="notification-management.html">戻る</a>
+    <textarea name="content" rows="10" cols="30" th:text="${notification.body}"></textarea>
+
+    <a th:href="@{/admin/notification/menu}">戻る</a>
     <button type="submit">投稿</button>
+</form>
 </body>
 
 </html>

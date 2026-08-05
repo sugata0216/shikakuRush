@@ -1,19 +1,60 @@
 <!DOCTYPE html>
-<html lang="ja">
-
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>問題報告管理</title>
 </head>
-
 <body>
-    <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    <a href="administrator-top.html">戻る</a>
-</body>
+<h1>問題報告一覧</h1>
 
+<!-- ✅ 報告一覧 -->
+<div th:if="${#lists.isEmpty(reports)}">
+    <p>現在問題報告はありません</p>
+</div>
+
+<div th:each="report : ${reports}">
+    <div th:attr="data-id=${report.id}"
+         onclick="openModal(this.dataset.id)"
+         style="cursor: pointer;">
+        <p th:text="${report.detail}"></p>
+        <p th:text="${#temporals.format(report.createdAt, 'yyyy/MM/dd HH:mm')}"></p>
+    </div>
+
+    <!-- ✅ 詳細モーダル -->
+    <div th:id="'modal-' + ${report.id}" style="display: none;">
+        <div>
+            <button th:attr="onclick='closeModal(' + ${report.id} + ')'">✕</button>
+
+            <h3>報告内容</h3>
+            <p th:text="${report.detail}"></p>
+            <p th:text="${#temporals.format(report.createdAt, 'yyyy/MM/dd HH:mm')}"></p>
+
+            <h3>該当問題</h3>
+            <p th:text="${report.questionText}"></p>
+
+            <p><b>選択肢A：</b><span th:text="${report.choice1}"></span></p>
+            <p><b>選択肢B：</b><span th:text="${report.choice2}"></span></p>
+            <p><b>選択肢C：</b><span th:text="${report.choice3}"></span></p>
+            <p><b>選択肢D：</b><span th:text="${report.choice4}"></span></p>
+
+            <!-- ✅ 問題編集画面へのリンク -->
+            <a href="#">
+                <button type="button">編集</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<a href="/admin/top">戻る</a>
+
+<script>
+    function openModal(id) {
+        document.getElementById('modal-' + id).style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById('modal-' + id).style.display = 'none';
+    }
+</script>
+</body>
 </html>

@@ -1,6 +1,7 @@
 package com.example.shikakurush.entity;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class Inquiry {
@@ -8,4 +9,6 @@ public class Inquiry {
     private Integer userId;
     private String title;
     private String body;
+    private LocalDateTime createdAt;
+    private String username; // JOIN用
 }

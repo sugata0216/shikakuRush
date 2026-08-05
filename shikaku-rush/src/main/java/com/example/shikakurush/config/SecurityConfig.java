@@ -69,7 +69,8 @@ public class SecurityConfig {
                                 "/admin/user",
                                 "/admin/user/ban",
                                 "/admin/user/unban",
-                                "/admin/user/menu"
+                                "/admin/user/menu",
+                                "/admin/report"
                         ).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()
