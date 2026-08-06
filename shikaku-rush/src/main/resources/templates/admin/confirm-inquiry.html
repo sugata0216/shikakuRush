@@ -34,14 +34,17 @@
 </div>
 
 <div th:each="inquiry : ${inquiries}">
-    <div th:text="${inquiry.id}"></div>
+    <div th:text="${inquiry.username} ?: '退会済みユーザー'"></div>
     <div th:text="${inquiry.title}"></div>
+    <div th:text="${#temporals.format(inquiry.createdAt, 'yyyy/MM/dd HH:mm')}"></div>
     <div>
         <button type="button"
                 class="detail-btn"
                 th:data-id="${inquiry.id}"
                 th:data-title="${inquiry.title}"
-                th:data-body="${inquiry.body}">
+                th:data-body="${inquiry.body}"
+                th:data-username="${inquiry.username} ?: '退会済みユーザー'"
+                th:data-created="${#temporals.format(inquiry.createdAt, 'yyyy/MM/dd HH:mm')}">
             詳細
         </button>
     </div>
@@ -53,6 +56,8 @@
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div class="popup" id="popup" style="display:none;">
     <h2 id="popupTitle"></h2>
+    <p id="popupUsername"></p>
+    <p id="popupCreated"></p>
     <p id="popupBody"></p>
     <button type="button" onclick="closePopup()">×</button>
 </div>
@@ -60,8 +65,10 @@
 <script>
     document.querySelectorAll('.detail-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            document.getElementById('popupTitle').textContent = this.dataset.title;
-            document.getElementById('popupBody').textContent  = this.dataset.body;
+            document.getElementById('popupTitle').textContent   = this.dataset.title;
+            document.getElementById('popupUsername').textContent = this.dataset.username;
+            document.getElementById('popupCreated').textContent = this.dataset.created;
+            document.getElementById('popupBody').textContent    = this.dataset.body;
             document.getElementById('overlay').classList.add('active');
             document.getElementById('popup').style.display = 'block';
         });

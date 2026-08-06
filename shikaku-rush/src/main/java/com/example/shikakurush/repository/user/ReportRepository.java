@@ -4,6 +4,8 @@ import com.example.shikakurush.entity.Report;
 import com.example.shikakurush.mapper.user.ReportMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ReportRepository {
 
@@ -15,5 +17,10 @@ public class ReportRepository {
 
     public void save(Report report) {
         reportMapper.insert(report);
+    }
+
+    // ✅ 追加
+    public List<Report> findAll() {
+        return reportMapper.findAll();
     }
 }

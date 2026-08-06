@@ -10,4 +10,11 @@ public class Report {
     private Integer questionId;
     private String detail;
     private LocalDateTime createdAt;
+
+    // ✅ JOINで取得する問題情報
+    private String questionText;
+    private String choice1;
+    private String choice2;
+    private String choice3;
+    private String choice4;
 }

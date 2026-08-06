@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -7,15 +7,30 @@
 </head>
 
 <body>
-    <h1>お知らせ一覧</h1>
+<h1>お知らせ一覧</h1>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<!-- 元のHTMLになかったため追加：新規作成フォームへの導線 -->
+<a th:href="@{/admin/notification/new}">新規作成</a>
+
+<div th:each="n : ${notifications}">
+    <div th:text="${n.title}"></div>
+    <div th:text="${#temporals.format(n.postedAt, 'yyyy/MM/dd HH:mm')}"></div>
+    <div></div>
     <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div><button type="submit">編集</button></div>
-        <div><button type="submit">削除</button></div>
+        <a th:href="@{'/admin/notification/' + ${n.id} + '/edit'}">
+            <button type="button">編集</button>
+        </a>
     </div>
-    <a href="administrator-top.html">戻る</a>
+    <div>
+        <form th:action="@{'/admin/notification/' + ${n.id} + '/delete'}" method="post" style="display:inline">
+            <button type="submit">削除</button>
+        </form>
+    </div>
+</div>
+
+<a th:href="@{/admin/notification/menu}">戻る</a>
 </body>
 
 </html>
